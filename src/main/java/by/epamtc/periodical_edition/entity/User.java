@@ -1,7 +1,6 @@
 package by.epamtc.periodical_edition.entity;
 
-public class User {
-    private Long id;
+public class User extends BaseEntity<Long> {
     private String lastName;
     private String firstName;
     private String login;
@@ -14,7 +13,7 @@ public class User {
 
     public User(Long id, String lastName, String firstName, String login, String password, String mobilePhone,
                 String email, int balance) {
-        this.id = id;
+        super.setId(id);
         this.lastName = lastName;
         this.firstName = firstName;
         this.login = login;
@@ -22,14 +21,6 @@ public class User {
         this.mobilePhone = mobilePhone;
         this.email = email;
         this.balance = balance;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getLastName() {

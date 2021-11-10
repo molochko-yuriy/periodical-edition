@@ -2,9 +2,7 @@ package by.epamtc.periodical_edition.entity;
 
 import by.epamtc.periodical_edition.enums.PaymentStatus;
 
-public class Subscription {
-
-    private Long id;
+public class Subscription extends BaseEntity<Long> {
     private int price;
     private Long userId;
     private PaymentStatus paymentStatus;
@@ -12,18 +10,10 @@ public class Subscription {
     public  Subscription(){};
 
     public Subscription(Long id, int price, Long userId, PaymentStatus paymentStatus) {
-        this.id = id;
+        super.setId(id);
         this.price = price;
         this.userId = userId;
         this.paymentStatus = paymentStatus;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public int getPrice() {

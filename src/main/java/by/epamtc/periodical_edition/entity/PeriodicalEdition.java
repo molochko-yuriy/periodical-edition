@@ -3,8 +3,7 @@ package by.epamtc.periodical_edition.entity;
 import by.epamtc.periodical_edition.enums.PeriodicalEditionType;
 import by.epamtc.periodical_edition.enums.Periodicity;
 
-public class PeriodicalEdition {
-    private Long id;
+public class PeriodicalEdition extends BaseEntity<Long> {
     private int price;
     private String description;
     private String title;
@@ -15,20 +14,12 @@ public class PeriodicalEdition {
 
     public PeriodicalEdition(Long id, int price, String description, String title,
                              PeriodicalEditionType periodicalEditionType, Periodicity periodicity) {
-        this.id = id;
+        super.setId(id);
         this.price = price;
         this.description = description;
         this.title = title;
         this.periodicalEditionType = periodicalEditionType;
         this.periodicity = periodicity;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public int getPrice() {

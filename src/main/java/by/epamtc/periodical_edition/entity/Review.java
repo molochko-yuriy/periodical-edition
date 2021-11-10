@@ -1,8 +1,6 @@
 package by.epamtc.periodical_edition.entity;
 
-public class Review {
-
-    private Long id;
+public class Review extends BaseEntity<Long> {
     private String userComment;
     private int rating;
     private Long userId;
@@ -10,19 +8,11 @@ public class Review {
 
     public Review(){}
     public Review(Long id, String userComment, int rating, Long userId, Long periodicalEditionId) {
-        this.id = id;
+        super.setId(id);
         this.userComment = userComment;
         this.rating = rating;
         this.userId = userId;
         this.periodicalEditionId = periodicalEditionId;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getUserComment() {

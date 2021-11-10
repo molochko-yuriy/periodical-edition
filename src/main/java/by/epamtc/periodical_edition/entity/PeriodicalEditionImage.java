@@ -1,24 +1,14 @@
 package by.epamtc.periodical_edition.entity;
 
-public class PeriodicalEditionImage {
-
-    private Long id;
+public class PeriodicalEditionImage extends BaseEntity<Long> {
     private  Long periodicalEditionId;
     private String imagePath;
 
     public PeriodicalEditionImage(){};
     public PeriodicalEditionImage(Long id, Long periodicalEditionId, String imagePath) {
-        this.id = id;
+        super.setId(id);
         this.periodicalEditionId = periodicalEditionId;
         this.imagePath = imagePath;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Long getPeriodicalEditionId() {

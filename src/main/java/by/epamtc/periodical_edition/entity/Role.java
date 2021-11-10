@@ -1,23 +1,13 @@
 package by.epamtc.periodical_edition.entity;
 
-public class Role {
-
-    private Long id;
+public class Role extends BaseEntity<Long>{
     private String roleName;
 
     public Role (){};
 
     public Role(Long id, String roleName) {
-        this.id = id;
+        super.setId(id);
         this.roleName = roleName;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getRoleName() {

@@ -2,8 +2,7 @@ package by.epamtc.periodical_edition.entity;
 
 import java.time.LocalDate;
 
-public class Content {
-    private Long id;
+public class Content extends BaseEntity<Long> {
     private LocalDate startDate;
     private LocalDate expirationDate;
     private int price;
@@ -14,20 +13,12 @@ public class Content {
 
     public Content(Long id, LocalDate startDate, LocalDate expirationDate, int price,
                    Long subscriptionId, Long periodicalEditionId) {
-        this.id = id;
+        super.setId(id);
         this.startDate = startDate;
         this.expirationDate = expirationDate;
         this.price = price;
         this.subscriptionId = subscriptionId;
         this.periodicalEditionId = periodicalEditionId;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public LocalDate getStartDate() {
