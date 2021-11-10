@@ -9,6 +9,6 @@ public interface PeriodicalEditionRepository {
     List<PeriodicalEdition> findAll();
     boolean add(PeriodicalEdition periodicalEdition);
     boolean update(PeriodicalEdition periodicalEdition);
-    boolean delete(Long PeriodicalEditionId);
+    boolean delete(Long periodicalEditionId);
 }
 

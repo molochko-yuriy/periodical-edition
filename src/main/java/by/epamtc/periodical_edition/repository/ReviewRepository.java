@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ReviewRepository {
 
-    Review findById(Long ReviewId);
+    Review findById(Long reviewId);
     List<Review> findAll();
     boolean add(Review review);
     boolean update(Review review);

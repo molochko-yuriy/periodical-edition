@@ -6,6 +6,6 @@ public interface ImageRepository {
     PeriodicalEditionImage findById(Long periodicalEditionImageId);
     List<PeriodicalEditionImage> findAll();
     boolean add(PeriodicalEditionImage periodicalEditionImage);
-    boolean update(PeriodicalEditionImage PeriodicalEditionImage);
-    boolean delete(Long PeriodicalEditionImageId);
+    boolean update(PeriodicalEditionImage periodicalEditionImage);
+    boolean delete(Long periodicalEditionImageId);
 }
