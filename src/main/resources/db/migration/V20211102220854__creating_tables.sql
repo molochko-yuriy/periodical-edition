@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS user_role_link
     CONSTRAINT user_role_link_user
         FOREIGN KEY (user_id)
             REFERENCES users (id),
-    CONSTRAINT user_rile_link_role
+    CONSTRAINT user_role_link_role
         FOREIGN KEY (role_id)
             REFERENCES user_role (id)
 );
