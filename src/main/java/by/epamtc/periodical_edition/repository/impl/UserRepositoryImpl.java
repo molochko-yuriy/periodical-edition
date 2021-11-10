@@ -1,8 +1,8 @@
 package by.epamtc.periodical_edition.repository.impl;
 
+import by.epamtc.periodical_edition.entity.Subscription;
 import by.epamtc.periodical_edition.entity.User;
 import by.epamtc.periodical_edition.repository.UserRepository;
-import com.mysql.cj.jdbc.CallableStatementWrapper;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -27,6 +27,13 @@ public class UserRepositoryImpl implements UserRepository {
             "email = ?,mobile_phone = ?, balance = ? WHERE id = ?";
     private static final String DELETE_QUERY = "DELETE FROM users WHERE id = ?";
 
+    private static final String DELETE_LINK_FROM_USER_ROLE_LINK_QUERY = "DELETE FROM user_role_link WHERE user_id = ?";
+    private static final String DELETE_LINK_FROM_REVIEW_QUERY = "DELETE FROM review WHERE user_id = ?";
+    private static final String DELETE_LINK_FROM_SUBSCRIPTION_QUERY = "DELETE FROM subscription WHERE user_id = ?";//3
+
+    private static final String SELECT_FROM_SUBSCRIPTION_BY_USER_ID = "SELECT * FROM subscription WHERE user_id = ?";//1 list
+    private static final String DELETE_LINK_FROM_CONTENT_QUERY = "DELETE FROM content WHERE subscription_id = ?"; //2
+
     private final DataSource dataSource;
 
     public UserRepositoryImpl(DataSource dataSource) {
@@ -41,21 +48,25 @@ public class UserRepositoryImpl implements UserRepository {
             preparedStatement.setLong(1, usersId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                User user = new User();
-                user.setId(resultSet.getLong(ID_COLUMN));
-                user.setLastName(resultSet.getString(LAST_NAME_COLUMN));
-                user.setFirstName(resultSet.getString(FIRST_NAME_COLUMN));
-                user.setLogin(resultSet.getString(LOGIN_COLUMN));
-                user.setPassword(resultSet.getString(PASSWORD_COLUMN));
-                user.setEmail(resultSet.getString(EMAIL_COLUMN));
-                user.setMobilePhone(resultSet.getString(MOBILE_PHONE_COLUMN));
-                user.setBalance(resultSet.getInt(BALANCE_COLUMN));
-                return user;
+                return construct(resultSet);//////////////
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
         return new User();
+    }
+
+    private User construct( ResultSet resultSet) throws SQLException {
+        User user = new User();
+        user.setId(resultSet.getLong(ID_COLUMN));
+        user.setLastName(resultSet.getString(LAST_NAME_COLUMN));
+        user.setFirstName(resultSet.getString(FIRST_NAME_COLUMN));
+        user.setLogin(resultSet.getString(LOGIN_COLUMN));
+        user.setPassword(resultSet.getString(PASSWORD_COLUMN));
+        user.setEmail(resultSet.getString(EMAIL_COLUMN));
+        user.setMobilePhone(resultSet.getString(MOBILE_PHONE_COLUMN));
+        user.setBalance(resultSet.getInt(BALANCE_COLUMN));
+        return user;
     }
 
     @Override
@@ -66,16 +77,7 @@ public class UserRepositoryImpl implements UserRepository {
         ) {
             List<User> users = new ArrayList<>();
             while (resultSet.next()) {
-                User user = new User();
-                user.setId(resultSet.getLong(ID_COLUMN));
-                user.setFirstName(resultSet.getString(FIRST_NAME_COLUMN));
-                user.setLastName(resultSet.getString(LAST_NAME_COLUMN));
-                user.setLogin(resultSet.getString(LOGIN_COLUMN));
-                user.setPassword(resultSet.getString(PASSWORD_COLUMN));
-                user.setEmail(resultSet.getString(EMAIL_COLUMN));
-                user.setMobilePhone(resultSet.getString(MOBILE_PHONE_COLUMN));
-                user.setBalance(resultSet.getInt(BALANCE_COLUMN));
-                users.add(user);
+                users.add(construct(resultSet));//////////////////////////////
             }
             return users;
 
@@ -88,21 +90,15 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public boolean add(User user) {
-        try(Connection connection = dataSource.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)
-        ){
-            preparedStatement.setString(1, user.getFirstName());
-            preparedStatement.setString(2, user.getLastName());
-            preparedStatement.setString(3,user.getLogin());
-            preparedStatement.setString(4,user.getPassword());
-            preparedStatement.setString(5,user.getEmail());
-            preparedStatement.setString(6, user.getMobilePhone());
-            preparedStatement.setInt(7, user.getBalance());
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)
+        ) {
+            settingPreparedStatement(preparedStatement, user);
             int effectiveRows = preparedStatement.executeUpdate();
-            if(effectiveRows == 1) {
+            if (effectiveRows == 1) {
                 ResultSet resultSet = preparedStatement.getGeneratedKeys();
-                if(resultSet.next()) {
-                    user.setId(resultSet.getLong(ID_COLUMN));
+                if (resultSet.next()) {
+                    user.setId(resultSet.getLong(ID_COLUMN));//////////////////////
                     return true;
                 }
             }
@@ -113,18 +109,22 @@ public class UserRepositoryImpl implements UserRepository {
         return false;
     }
 
+    private void settingPreparedStatement(PreparedStatement preparedStatement, User user) throws SQLException {
+        preparedStatement.setString(1, user.getLastName());
+        preparedStatement.setString(2, user.getFirstName());
+        preparedStatement.setString(3, user.getLogin());
+        preparedStatement.setString(4, user.getPassword());
+        preparedStatement.setString(5, user.getEmail());
+        preparedStatement.setString(6, user.getMobilePhone());
+        preparedStatement.setInt(7, user.getBalance());
+    }
+
     @Override
     public boolean update(User user) {
-        try(Connection connection = dataSource.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_QUERY);
-        ){
-            preparedStatement.setString(1, user.getFirstName());
-            preparedStatement.setString(2, user.getLastName());
-            preparedStatement.setString(3,user.getLogin());
-            preparedStatement.setString(4,user.getPassword());
-            preparedStatement.setString(5,user.getEmail());
-            preparedStatement.setString(6, user.getMobilePhone());
-            preparedStatement.setInt(7, user.getBalance());
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_QUERY);
+        ) {
+            settingPreparedStatement(preparedStatement, user);//////////////////////////
             preparedStatement.setLong(8, user.getId());
             return preparedStatement.executeUpdate() == 1;
         } catch (SQLException ex) {
@@ -135,15 +135,57 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public boolean delete(Long userId) {
-        try(Connection connection = dataSource.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(DELETE_QUERY)
-        ){
-            preparedStatement.setLong(1, userId);
-            return preparedStatement.executeUpdate() == 1;
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_QUERY)
+        ) {
+            try {
+                connection.setAutoCommit(false);
+                preparedStatement.setLong(1, userId);
+                deleteLinksFromUserRoleLink(connection, userId);
+                deleteLinksFromSubscription(connection, userId);
+                deleteLinksFromReview(connection, userId);
+                preparedStatement.executeUpdate();
+                connection.commit();
+                return true;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                connection.rollback();
+            } finally {
+                connection.setAutoCommit(true);
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
         return false;
     }
 
+    private void deleteLinksFromUserRoleLink(Connection connection, Long userId) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(DELETE_LINK_FROM_USER_ROLE_LINK_QUERY);
+        preparedStatement.setLong(1, userId);
+        preparedStatement.executeUpdate();
+    }
+
+    private void deleteLinksFromReview(Connection connection, Long userId) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(DELETE_LINK_FROM_REVIEW_QUERY);
+        preparedStatement.setLong(1, userId);
+        preparedStatement.executeUpdate();
+    }
+
+    private void deleteLinksFromSubscription(Connection connection, Long userId) throws SQLException {
+        deleteLinksFromContent(connection, userId);
+        PreparedStatement preparedStatement = connection.prepareStatement(DELETE_LINK_FROM_SUBSCRIPTION_QUERY);
+        preparedStatement.setLong(1, userId);
+        preparedStatement.executeUpdate();
+    }
+
+    private void deleteLinksFromContent(Connection connection, Long userId) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(SELECT_FROM_SUBSCRIPTION_BY_USER_ID);
+        preparedStatement.setLong(1, userId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            preparedStatement = connection.prepareStatement(DELETE_LINK_FROM_CONTENT_QUERY);
+            preparedStatement.setLong(1, resultSet.getLong(ID_COLUMN));
+            preparedStatement.executeUpdate();
+        }
+    }
 }

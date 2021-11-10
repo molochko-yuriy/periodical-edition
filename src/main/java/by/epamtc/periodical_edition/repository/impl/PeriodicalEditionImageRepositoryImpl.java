@@ -1,6 +1,5 @@
 package by.epamtc.periodical_edition.repository.impl;
 
-import by.epamtc.periodical_edition.entity.PeriodicalEdition;
 import by.epamtc.periodical_edition.entity.PeriodicalEditionImage;
 import by.epamtc.periodical_edition.repository.ImageRepository;
 
@@ -37,16 +36,20 @@ public class PeriodicalEditionImageRepositoryImpl implements ImageRepository {
             preparedStatement.setLong(1, periodicalEditionImageId);
             ResultSet resultSet = preparedStatement.executeQuery();
            if(resultSet.next()){
-               PeriodicalEditionImage periodicalEditionImage = new PeriodicalEditionImage();
-               periodicalEditionImage.setId(resultSet.getLong(ID_COLUMN));
-               periodicalEditionImage.setImagePath(resultSet.getString(IMAGE_PATH_COLUMN));
-               periodicalEditionImage.setPeriodicalEditionId(resultSet.getLong(PERIODICAL_EDITION_ID_COLUMN));
-               return periodicalEditionImage;
+               return construct(resultSet);
            }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
         return new PeriodicalEditionImage();
+    }
+
+    private PeriodicalEditionImage construct(ResultSet resultSet) throws SQLException {
+        PeriodicalEditionImage periodicalEditionImage = new PeriodicalEditionImage();
+        periodicalEditionImage.setId(resultSet.getLong(ID_COLUMN));
+        periodicalEditionImage.setImagePath(resultSet.getString(IMAGE_PATH_COLUMN));
+        periodicalEditionImage.setPeriodicalEditionId(resultSet.getLong(PERIODICAL_EDITION_ID_COLUMN));
+        return periodicalEditionImage;
     }
 
     @Override
@@ -57,11 +60,7 @@ public class PeriodicalEditionImageRepositoryImpl implements ImageRepository {
         ){
             List<PeriodicalEditionImage> periodicalEditionsImages = new ArrayList<>();
             while(resultSet.next()){
-                PeriodicalEditionImage periodicalEditionImage = new PeriodicalEditionImage();
-                periodicalEditionImage.setId(resultSet.getLong(ID_COLUMN));
-                periodicalEditionImage.setImagePath(resultSet.getString(IMAGE_PATH_COLUMN));
-                periodicalEditionImage.setPeriodicalEditionId(resultSet.getLong(PERIODICAL_EDITION_ID_COLUMN));
-                periodicalEditionsImages.add(periodicalEditionImage);
+                periodicalEditionsImages.add(construct(resultSet));
             }
             return periodicalEditionsImages;
         } catch (SQLException ex) {
@@ -75,8 +74,7 @@ public class PeriodicalEditionImageRepositoryImpl implements ImageRepository {
         try(Connection connection = datasource.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)
         ){
-            preparedStatement.setString(1, periodicalEditionImage.getImagePath());
-            preparedStatement.setLong(2, periodicalEditionImage.getPeriodicalEditionId());
+            settingPreparedStatement(preparedStatement, periodicalEditionImage);
             int effectiveRows = preparedStatement.executeUpdate();
             if(effectiveRows == 1) {
                 ResultSet resultSet = preparedStatement.getGeneratedKeys();
@@ -92,14 +90,18 @@ public class PeriodicalEditionImageRepositoryImpl implements ImageRepository {
         return false;
     }
 
+    private void settingPreparedStatement(PreparedStatement preparedStatement, PeriodicalEditionImage periodicalEditionImage) throws SQLException {
+        preparedStatement.setString(1, periodicalEditionImage.getImagePath());
+        preparedStatement.setLong(2, periodicalEditionImage.getPeriodicalEditionId());
+    }
+
     @Override
-    public boolean update(PeriodicalEditionImage PeriodicalEditionImage) {
+    public boolean update(PeriodicalEditionImage periodicalEditionImage) {
         try(Connection connection = datasource.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_QUERY)
         ){
-            preparedStatement.setString(1, PeriodicalEditionImage.getImagePath());
-            preparedStatement.setLong(2, PeriodicalEditionImage.getPeriodicalEditionId());
-            preparedStatement.setLong(3, PeriodicalEditionImage.getId());
+            settingPreparedStatement(preparedStatement, periodicalEditionImage);
+            preparedStatement.setLong(3, periodicalEditionImage.getId());
             return preparedStatement.executeUpdate() == 1;
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -108,11 +110,11 @@ public class PeriodicalEditionImageRepositoryImpl implements ImageRepository {
     }
 
     @Override
-    public boolean delete(Long PeriodicalEditionImageId) {
+    public boolean delete(Long periodicalEditionImageId) {
         try(Connection connection = datasource.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_QUERY);
         ){
-            preparedStatement.setLong(1, PeriodicalEditionImageId);
+            preparedStatement.setLong(1, periodicalEditionImageId);
             return preparedStatement.executeUpdate() == 1;
 
         } catch (SQLException ex) {

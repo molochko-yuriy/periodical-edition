@@ -17,6 +17,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     private static final String INSERT_QUERY = "INSERT INTO user_role (role_name) VALUES (?)";
     private static final String UPDATE_QUERY = "UPDATE user_role SET role_name = ? WHERE id = ?";
     private static final String DELETE_QUERY = "DELETE FROM user_role WHERE id = ?";
+    private static final String DELETE_LINK_QUERY = "DELETE FROM user_role_link WHERE role_id = ?";
 
 
     private final DataSource dataSource;
@@ -27,16 +28,13 @@ public class RoleRepositoryImpl implements RoleRepository {
 
     @Override
     public Role findById(Long roleId) {//try with resource
-        try(Connection connection = dataSource.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BY_ID_QUERY)
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BY_ID_QUERY)
         ) {
             preparedStatement.setLong(1, roleId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) {
-                Role role = new Role();
-                role.setId(resultSet.getLong(ID_COLUMN));
-                role.setRoleName(resultSet.getString(ROLE_NAME_COLUMN));
-                return role;
+            if (resultSet.next()) {
+                return construct(resultSet);
             }
 
         } catch (SQLException ex) {
@@ -45,18 +43,22 @@ public class RoleRepositoryImpl implements RoleRepository {
         return new Role();
     }
 
+    private Role construct (ResultSet resultSet) throws SQLException {
+        Role role = new Role();
+        role.setId(resultSet.getLong(ID_COLUMN));
+        role.setRoleName(resultSet.getString(ROLE_NAME_COLUMN));
+        return  role;
+    }
+
     @Override
     public List<Role> findAll() {
-        try(Connection connection = dataSource.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_QUERY);
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_QUERY);
+             ResultSet resultSet = preparedStatement.executeQuery();
         ) {
             List<Role> roles = new ArrayList<>();
-            while(resultSet.next()) {
-                Role role = new Role();
-                role.setId(resultSet.getLong(ID_COLUMN));
-                role.setRoleName(resultSet.getString(ROLE_NAME_COLUMN));
-                roles.add(role);
+            while (resultSet.next()) {
+                roles.add(construct(resultSet));
             }
             return roles;
 
@@ -68,14 +70,14 @@ public class RoleRepositoryImpl implements RoleRepository {
 
     @Override
     public boolean add(Role role) {
-        try(Connection connection = dataSource.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
         ) {
-            preparedStatement.setString(1, role.getRoleName());
+            settingPreparedStatement(preparedStatement, role);
             int effectiveRows = preparedStatement.executeUpdate();
-            if(effectiveRows == 1) {
+            if (effectiveRows == 1) {
                 ResultSet resultSet = preparedStatement.getGeneratedKeys();
-                if(resultSet.next()) {
+                if (resultSet.next()) {
                     role.setId(resultSet.getLong(ID_COLUMN));
                     return true;
                 }
@@ -86,12 +88,16 @@ public class RoleRepositoryImpl implements RoleRepository {
         return false;
     }
 
+    private void settingPreparedStatement(PreparedStatement preparedStatement, Role role) throws SQLException {
+        preparedStatement.setString(1, role.getRoleName());
+    }
+
     @Override
     public boolean update(Role role) {
-        try(Connection connection = dataSource.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_QUERY);
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_QUERY);
         ) {
-            preparedStatement.setString(1, role.getRoleName());
+            settingPreparedStatement(preparedStatement, role);
             preparedStatement.setLong(2, role.getId());
             return preparedStatement.executeUpdate() == 1;
         } catch (SQLException ex) {
@@ -102,15 +108,32 @@ public class RoleRepositoryImpl implements RoleRepository {
 
     @Override
     public boolean delete(Long roleId) {
-        try(Connection connection = dataSource.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(DELETE_QUERY);
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_QUERY);
         ) {
-            preparedStatement.setLong(1, roleId);
-            //надо метод, который будет удалять ссылки из таблицы user_role_link
-            return preparedStatement.executeUpdate() == 1;
+            try {
+                connection.setAutoCommit(false);
+                preparedStatement.setLong(1, roleId);
+                deleteRoleLinks(connection, roleId);
+                preparedStatement.executeUpdate();
+                connection.commit();
+                return true;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                connection.rollback();
+            } finally {
+                connection.setAutoCommit(true);
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
         return false;
+    }
+
+
+    private void deleteRoleLinks(Connection connection, Long roleId) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(DELETE_LINK_QUERY);
+        preparedStatement.setLong(1, roleId);
+        preparedStatement.executeUpdate();
     }
 }

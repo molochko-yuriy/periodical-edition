@@ -25,6 +25,10 @@ public class PeriodicalEditionRepositoryImpl implements PeriodicalEditionReposit
     private static final String UPDATE_QUERY = "UPDATE periodical_edition SET periodical_edition_type = ?, price = ?, " +
             "periodicity = ?, periodical_edition_description = ?, title = ? WHERE id = ?";
     private static final String DELETE_QUERY = "DELETE FROM periodical_edition WHERE id = ?";
+    private static final String DELETE_LINK_FROM_REVIEW_QUERY = "DELETE FROM review WHERE periodical_edition_id = ?";
+    private static final String DELETE_LINK_FROM_IMAGE_QUERY = "DELETE FROM periodical_edition_image WHERE periodical_edition_id = ?";
+    private static final String DELETE_LINK_FROM_CONTENT_QUERY = "DELETE FROM content WHERE periodical_edition_id = ?";
+
     private final DataSource dataSource;
 
     public PeriodicalEditionRepositoryImpl(DataSource dataSource) {
@@ -39,21 +43,24 @@ public class PeriodicalEditionRepositoryImpl implements PeriodicalEditionReposit
             preparedStatement.setLong(1, periodicalEditionId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if(resultSet.next()){
-                PeriodicalEdition periodicalEdition = new PeriodicalEdition();
-                periodicalEdition.setId(resultSet.getLong(ID_COLUMN));
-                periodicalEdition.setPeriodicalEditionType(PeriodicalEditionType.valueOf(resultSet.getString(PERIODICAL_EDITION_TYPE_COLUMN)));
-                periodicalEdition.setPrice(resultSet.getInt(PRICE_COLUMN));
-                periodicalEdition.setPeriodicity(Periodicity.valueOf(resultSet.getString(PERIODICITY_COLUMN)));
-                periodicalEdition.setDescription(resultSet.getString(PERIODICAL_EDITION_DESCRIPTION_COLUMN));
-                periodicalEdition.setTitle(resultSet.getString(TITLE_COLUMN));
-                return periodicalEdition;
+                return construct(resultSet);
             }
         }
-
         catch (SQLException ex) {
             ex.printStackTrace();
         }
         return new PeriodicalEdition();
+    }
+
+    private PeriodicalEdition construct(ResultSet resultSet) throws SQLException {
+        PeriodicalEdition periodicalEdition = new PeriodicalEdition();
+        periodicalEdition.setId(resultSet.getLong(ID_COLUMN));
+        periodicalEdition.setPeriodicalEditionType(PeriodicalEditionType.valueOf(resultSet.getString(PERIODICAL_EDITION_TYPE_COLUMN)));
+        periodicalEdition.setPrice(resultSet.getInt(PRICE_COLUMN));
+        periodicalEdition.setPeriodicity(Periodicity.valueOf(resultSet.getString(PERIODICITY_COLUMN)));
+        periodicalEdition.setDescription(resultSet.getString(PERIODICAL_EDITION_DESCRIPTION_COLUMN));
+        periodicalEdition.setTitle(resultSet.getString(TITLE_COLUMN));
+        return periodicalEdition;
     }
 
     @Override
@@ -64,14 +71,7 @@ public class PeriodicalEditionRepositoryImpl implements PeriodicalEditionReposit
         ){
             List<PeriodicalEdition> periodicalEditions = new ArrayList<>();
             while(resultSet.next()){
-                PeriodicalEdition periodicalEdition = new PeriodicalEdition();
-                periodicalEdition.setId(resultSet.getLong(ID_COLUMN));
-                periodicalEdition.setPeriodicalEditionType(PeriodicalEditionType.valueOf(resultSet.getString(PERIODICAL_EDITION_TYPE_COLUMN)));
-                periodicalEdition.setPrice(resultSet.getInt(PRICE_COLUMN));
-                periodicalEdition.setPeriodicity(Periodicity.valueOf(resultSet.getString(PERIODICITY_COLUMN)));
-                periodicalEdition.setDescription(resultSet.getString(PERIODICAL_EDITION_DESCRIPTION_COLUMN));
-                periodicalEdition.setTitle(resultSet.getString(TITLE_COLUMN));
-                periodicalEditions.add(periodicalEdition);
+                periodicalEditions.add(construct(resultSet));
             }
             return periodicalEditions;
         } catch (SQLException ex) {
@@ -85,11 +85,7 @@ public class PeriodicalEditionRepositoryImpl implements PeriodicalEditionReposit
         try(Connection connection = dataSource.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)
         ){
-            preparedStatement.setString(1, periodicalEdition.getPeriodicalEditionType().toString());
-            preparedStatement. setInt(2, periodicalEdition.getPrice());
-            preparedStatement.setString(3, periodicalEdition.getPeriodicity().toString());
-            preparedStatement. setString( 4, periodicalEdition.getDescription());
-            preparedStatement.setString(5, periodicalEdition.getTitle());
+            settingPreparedStatement(preparedStatement, periodicalEdition);
             int effectiveRows = preparedStatement.executeUpdate();
             if(effectiveRows == 1) {
                 ResultSet resultSet = preparedStatement.getGeneratedKeys();
@@ -105,16 +101,20 @@ public class PeriodicalEditionRepositoryImpl implements PeriodicalEditionReposit
         return false;
     }
 
+    private void settingPreparedStatement(PreparedStatement preparedStatement, PeriodicalEdition periodicalEdition) throws SQLException {
+        preparedStatement.setString(1, periodicalEdition.getPeriodicalEditionType().toString());
+        preparedStatement.setInt(2, periodicalEdition.getPrice());
+        preparedStatement.setString(3, periodicalEdition.getPeriodicity().toString());
+        preparedStatement.setString(4, periodicalEdition.getDescription());
+        preparedStatement.setString(5, periodicalEdition.getTitle());
+    }
+
     @Override
     public boolean update(PeriodicalEdition periodicalEdition) {
         try(Connection connection = dataSource.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_QUERY)
         ){
-            preparedStatement.setString(1, periodicalEdition.getPeriodicalEditionType().toString());
-            preparedStatement.setInt(2, periodicalEdition.getPrice());
-            preparedStatement.setString(3, periodicalEdition.getPeriodicity().toString());
-            preparedStatement.setString(4, periodicalEdition.getDescription());
-            preparedStatement.setString(5, periodicalEdition.getTitle());
+            settingPreparedStatement(preparedStatement, periodicalEdition);
             preparedStatement.setLong(6, periodicalEdition.getId());
             return preparedStatement.executeUpdate() == 1;
         } catch (SQLException ex) {
@@ -124,16 +124,47 @@ public class PeriodicalEditionRepositoryImpl implements PeriodicalEditionReposit
     }
 
     @Override
-    public boolean delete(Long PeriodicalEditionId) {
+    public boolean delete(Long periodicalEditionId) {
         try(Connection connection = dataSource.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_QUERY)
         ){
-            preparedStatement.setLong(1, PeriodicalEditionId);
-            return preparedStatement.executeUpdate() == 1;
+            try {
+                connection.setAutoCommit(false);
+                preparedStatement.setLong(1, periodicalEditionId);
+                deleteLinksFromImage(connection, periodicalEditionId);
+                deleteLinksFromContent(connection,periodicalEditionId);
+                deleteLinksFromReview(connection, periodicalEditionId );
+                preparedStatement.executeUpdate();
+                connection.commit();
+                return true;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                connection.rollback();
+            } finally {
+                connection.setAutoCommit(true);
+            }
 
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
         return false;
+    }
+
+     private void deleteLinksFromReview(Connection connection, Long periodicalEditionId) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(DELETE_LINK_FROM_REVIEW_QUERY);
+        preparedStatement.setLong(1, periodicalEditionId);
+        preparedStatement.executeUpdate();
+    }
+
+    private void deleteLinksFromImage(Connection connection, Long periodicalEditionId) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(DELETE_LINK_FROM_IMAGE_QUERY);
+        preparedStatement.setLong(1, periodicalEditionId);
+        preparedStatement.executeUpdate();
+    }
+
+    private void deleteLinksFromContent(Connection connection, Long periodicalEditionId) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(DELETE_LINK_FROM_CONTENT_QUERY);
+        preparedStatement.setLong(1, periodicalEditionId);
+        preparedStatement.executeUpdate();
     }
 }
