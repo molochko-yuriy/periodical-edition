@@ -7,18 +7,21 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.*;
+import java.util.stream.Collectors;
 
 public class PeriodicalEditionImageRepositoryImplTest extends BaseRepositoryTest {
-    private List<PeriodicalEditionImage> periodicalEditionImages;
-    private PeriodicalEditionImageRepositoryImpl imageRepository;
+    private final List<PeriodicalEditionImage> periodicalEditionImages;
+    private final PeriodicalEditionImageRepositoryImpl imageRepository;
 
     public  PeriodicalEditionImageRepositoryImplTest(){
         periodicalEditionImages = new ArrayList<>();
         imageRepository = new PeriodicalEditionImageRepositoryImpl(getConnectionPool());
         periodicalEditionImages.add(new PeriodicalEditionImage(1L, 1L, "D/im/cont"));
         periodicalEditionImages.add(new PeriodicalEditionImage(2L, 2L, "D/if/nok"));
+        periodicalEditionImages.add(new PeriodicalEditionImage(3L, 1L, "A/im/cont"));
+        periodicalEditionImages.add(new PeriodicalEditionImage(4L, 2L, "A/if/nok"));
+        periodicalEditionImages.add(new PeriodicalEditionImage(5L, 1L, "B/im/cont"));
+        periodicalEditionImages.add(new PeriodicalEditionImage(6L, 2L, "B/if/nok"));
     }
 
     @Test
@@ -30,7 +33,7 @@ public class PeriodicalEditionImageRepositoryImplTest extends BaseRepositoryTest
         PeriodicalEditionImage actual = imageRepository.findById(1L);
 
         //then
-        assertEquals(expected, actual);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -39,13 +42,13 @@ public class PeriodicalEditionImageRepositoryImplTest extends BaseRepositoryTest
         final List <PeriodicalEditionImage> actual = imageRepository.findAll();
 
         //then
-        assertEquals(periodicalEditionImages, actual);
+        Assert.assertEquals(periodicalEditionImages, actual);
     }
 
     @Test
     public void add_validData_shouldAddNewImage() {
         //given
-        PeriodicalEditionImage expected = new PeriodicalEditionImage(3L, 1L, "D/if/nok/k");
+        PeriodicalEditionImage expected = new PeriodicalEditionImage(7L, 1L, "D/if/nok/k");
         PeriodicalEditionImage actual = new PeriodicalEditionImage(null, 1L, "D/if/nok/k");
 
         //when
@@ -53,8 +56,8 @@ public class PeriodicalEditionImageRepositoryImplTest extends BaseRepositoryTest
 
         //then
         Assert.assertTrue(isAdded);
-        assertEquals(expected, actual);
-        assertEquals(expected, imageRepository.findById(actual.getId()));
+        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(expected, imageRepository.findById(actual.getId()));
     }
 
     @Test
@@ -71,11 +74,37 @@ public class PeriodicalEditionImageRepositoryImplTest extends BaseRepositoryTest
 
         //then
         Assert.assertTrue(isUpdated);
-        assertEquals(expected, actual);
-        assertEquals(expected, imageRepository.findById(actual.getId()));
+        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(expected, imageRepository.findById(actual.getId()));
     }
 
     @Test
-    public void delete() {
+    public void delete_validData_shouldDeleteImage() {
+        //given
+        PeriodicalEditionImage expected = periodicalEditionImages.get(0);
+        PeriodicalEditionImage actual = imageRepository.findById(1L);
+
+        Assert.assertEquals(expected, actual);
+
+        //when
+        boolean isDeleted = imageRepository.delete(1L);
+
+        //then
+        Assert.assertTrue(isDeleted);
+        Assert.assertNull(imageRepository.findById(1L));
+
     }
+
+    @Test
+    public void findImageByPeriodicalEditionId_validData_shouldReturnImagesOfCertainPeriodicalEdition() {
+        //given && when
+        List<PeriodicalEditionImage> expected = periodicalEditionImages.stream()
+                .filter(periodicalEditionImage -> periodicalEditionImage.getPeriodicalEditionId() == 1L)
+                .collect(Collectors.toList());
+
+        //then
+        List<PeriodicalEditionImage> actual = imageRepository.findImageByPeriodicalEditionId(1L);
+        Assert.assertEquals(expected, actual);
+    }
+
 }

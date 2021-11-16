@@ -1,29 +1,33 @@
 package by.epamtc.periodical_edition.repository.impl;
 
-import by.epamtc.periodical_edition.entity.Subscription;
 import by.epamtc.periodical_edition.entity.User;
-import by.epamtc.periodical_edition.repository.BaseRepositoryTest;
-import by.epamtc.periodical_edition.repository.ReviewRepository;
-import by.epamtc.periodical_edition.repository.SubscriptionRepository;
-import by.epamtc.periodical_edition.repository.UserRepository;
+import by.epamtc.periodical_edition.repository.*;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
 public class UserRepositoryImplTest extends BaseRepositoryTest {
-    private UserRepository userRepository;
-    private List<User> users;
+    private final UserRepository userRepository;
+    private final List<User> users;
+    private final SubscriptionRepository subscriptionRepository;
+    private final RoleRepository roleRepository;
 
-    public UserRepositoryImplTest(){
+    public UserRepositoryImplTest() {
         users = new ArrayList<>();
         userRepository = new UserRepositoryImpl(getConnectionPool());
-        users.add(new User(1L, "Александр", "Степанов", "stepanow.a@mail.ru", "1111","8684758965", "stepanow.a@mail.ru", 235));
-        users.add(new User(2L, "Виктор", "Александров", "alecsandrow.a@mail.ru", "2222",
-                "985214","alecsandrow.a@mail.ru", 25));
+        users.add(new User(1L, "Степанов", "Александр", "stepanow.a@mail.ru", "1111",
+                "8684758965", "stepanow.a@mail.ru", 235));
+        users.add(new User(2L, "Александров", "Виктор", "alecsandrow.a@mail.ru", "2222",
+                "985214", "alecsandrow.a@mail.ru", 25));
+        users.add(new User(3L, "Степанов", "Степан", "stepan.a@mail.ru", "3333",
+                "9522585", "stepan.a@mail.ru", 235));
+        users.add(new User(4L, "Александров", "Андрей", "alecsandr.a@mail.ru", "4444",
+                "7892152", "alecsandr.a@mail.ru", 25));
+        subscriptionRepository = new SubscriptionRepositoryImpl(getConnectionPool());
+        roleRepository = new RoleRepositoryImpl(getConnectionPool());
+
     }
 
 
@@ -35,8 +39,8 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
         //when
         User actual = userRepository.findById(1L);
 
-         //then
-        assertEquals(expected, actual);
+        //then
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -45,29 +49,29 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
         final List<User> actual = userRepository.findAll();
 
         //then
-        assertEquals(users, actual);
+        Assert.assertEquals(users, actual);
     }
 
 
     @Test
     public void add_validData_shouldAddNewUser() {
         //given
-        User expected = new User(3L, "Oleg", "Petrov", "rider", "580236", "+375295899663", "oleg.p@mail.ru", 85);
-        User actual = new User(null,"Oleg", "Petrov", "rider", "580236", "+375295899663", "oleg.p@mail.ru", 85);
+        User expected = new User(5L, "Oleg", "Petrov", "rider", "580236", "+375295899663", "oleg.p@mail.ru", 85);
+        User actual = new User(null, "Oleg", "Petrov", "rider", "580236", "+375295899663", "oleg.p@mail.ru", 85);
 
         // when
         boolean isAdded = userRepository.add(actual);
 
         //then
         Assert.assertTrue(isAdded);
-        assertEquals(expected, actual);
-        assertEquals(expected, userRepository.findById(actual.getId()));
+        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(expected, userRepository.findById(actual.getId()));
     }
 
     @Test
     public void update_validData_shouldUpdateUser() {
         //given
-        User expected = new User(2L, "Petrov", "Oleg", "rider", "158963","+375291548544", "petrov.a@mail.ru", 85);
+        User expected = new User(2L, "Petrov", "Oleg", "rider", "158963", "+375291548544", "petrov.a@mail.ru", 85);
         User actual = userRepository.findById(2L);
 
         Assert.assertEquals(users.get(1), actual);
@@ -84,31 +88,29 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
         boolean isUpdated = userRepository.update(actual);
 
         //then
-        assertTrue(isUpdated);
-        assertEquals(expected, actual);
-        assertEquals(expected, userRepository.findById(actual.getId()));
+        Assert.assertTrue(isUpdated);
+        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(expected, userRepository.findById(actual.getId()));
     }
-
 
 
     @Test
     public void delete_validData_shouldDeleteUser() {
-        SubscriptionRepository subscriptionRepository = new SubscriptionRepositoryImpl(getConnectionPool());
-
-        ReviewRepository reviewRepository = new ReviewRepositoryImpl(getConnectionPool());
         //given
+        User expected = users.get(0);
         User actual = userRepository.findById(1L);
 
-        Subscription actual1 =subscriptionRepository.findById(1L);
-
-        List<Subscription> subscriptions = subscriptionRepository.findSubscriptionsByUserId(1L);
+        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(2, roleRepository.findRolesByUserId(actual.getId()).size());
+        Assert.assertEquals(4, subscriptionRepository.findSubscriptionsByUserId(actual.getId()).size());
 
         // when
-        boolean result = userRepository.delete(1L);
-        boolean result2 = subscriptionRepository.delete(1L);
+        boolean isDeleted = userRepository.delete(actual.getId());
 
         //then
-        Assert.assertEquals(new User(), userRepository.findById(actual.getId()));
-
+        Assert.assertTrue(isDeleted);
+        Assert.assertNull(userRepository.findById(1L));
+        Assert.assertEquals(0, roleRepository.findRolesByUserId(actual.getId()).size());
+        Assert.assertEquals(0, subscriptionRepository.findSubscriptionsByUserId(actual.getId()).size());
     }
 }

@@ -4,23 +4,27 @@ import by.epamtc.periodical_edition.entity.PeriodicalEdition;
 import by.epamtc.periodical_edition.enums.PeriodicalEditionType;
 import by.epamtc.periodical_edition.enums.Periodicity;
 import by.epamtc.periodical_edition.repository.BaseRepositoryTest;
+import by.epamtc.periodical_edition.repository.ImageRepository;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
 public class PeriodicalEditionRepositoryImplTest extends BaseRepositoryTest {
     private final PeriodicalEditionRepositoryImpl periodicalEditionRepository;
     private final List<PeriodicalEdition> periodicalEditions;
+    private final ContentRepositoryImpl contentRepository;
+    private final ImageRepository imageRepository;
 
     public PeriodicalEditionRepositoryImplTest() {
         periodicalEditions = new ArrayList<>();
         periodicalEditionRepository = new PeriodicalEditionRepositoryImpl(getConnectionPool());
         periodicalEditions.add(new PeriodicalEdition(1L, 20, "very good", "The Guardian", PeriodicalEditionType.MAGAZINE, Periodicity.WEEKLY));
         periodicalEditions.add(new PeriodicalEdition(2L, 30, "good", "The NY Times", PeriodicalEditionType.NEWSPAPER, Periodicity.MONTHLY));
+        contentRepository = new ContentRepositoryImpl(getConnectionPool());
+        imageRepository = new PeriodicalEditionImageRepositoryImpl(getConnectionPool());
     }
 
     @Test
@@ -32,7 +36,7 @@ public class PeriodicalEditionRepositoryImplTest extends BaseRepositoryTest {
         PeriodicalEdition actual = periodicalEditionRepository.findById(1L);
 
         //then
-        assertEquals(actual, expected);
+        Assert.assertEquals(actual, expected);
     }
 
     @Test
@@ -41,7 +45,7 @@ public class PeriodicalEditionRepositoryImplTest extends BaseRepositoryTest {
         final List<PeriodicalEdition> actual = periodicalEditionRepository.findAll();
 
         //then
-        assertEquals(actual, periodicalEditions);
+        Assert.assertEquals(actual, periodicalEditions);
     }
 
     @Test
@@ -55,8 +59,8 @@ public class PeriodicalEditionRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assert.assertTrue(isAdded);
-        assertEquals(actual, expected);
-        assertEquals(expected, periodicalEditionRepository.findById(actual.getId()));
+        Assert.assertEquals(actual, expected);
+        Assert.assertEquals(expected, periodicalEditionRepository.findById(actual.getId()));
     }
 
     @Test
@@ -75,12 +79,38 @@ public class PeriodicalEditionRepositoryImplTest extends BaseRepositoryTest {
         boolean isUpdated = periodicalEditionRepository.update(actual);
 
         //then
-        assertTrue(isUpdated);
-        assertEquals(expected, actual);
-        assertEquals(expected, periodicalEditionRepository.findById(actual.getId()));
+        Assert.assertTrue(isUpdated);
+        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(expected, periodicalEditionRepository.findById(actual.getId()));
     }
 
     @Test
-    public void delete() {
+    public void delete_validData_shouldDeletePeriodicalEdition() {
+        //given
+        PeriodicalEdition expected = periodicalEditions.get(0);
+        PeriodicalEdition actual = periodicalEditionRepository.findById(1L);
+
+        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(2, contentRepository.findContentByPeriodicalEditionId(actual.getId()).size());
+        Assert.assertEquals(3, imageRepository.findImageByPeriodicalEditionId(actual.getId()).size());
+
+        //when
+        boolean isDeleted = periodicalEditionRepository.delete(1L);
+
+        //then
+        Assert.assertTrue(isDeleted);
+        Assert.assertEquals(0, contentRepository.findContentByPeriodicalEditionId(actual.getId()).size());
+        Assert.assertEquals(0, imageRepository.findImageByPeriodicalEditionId(actual.getId()).size());
+        Assert.assertNull(periodicalEditionRepository.findById(1L));
+    }
+
+    @Test
+    public void findPeriodicalEditionsBySubscriptionId_validData_shouldReturnPeriodicalEditions(){
+        //given && when
+        int expected = 1;
+
+        //then
+        List<PeriodicalEdition> actual  = periodicalEditionRepository.findPeriodicalEditionsBySubscriptionId(1L);
+        Assert.assertEquals(expected, actual.size());
     }
 }

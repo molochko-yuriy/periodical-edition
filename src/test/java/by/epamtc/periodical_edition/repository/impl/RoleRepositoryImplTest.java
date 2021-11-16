@@ -3,7 +3,6 @@ package by.epamtc.periodical_edition.repository.impl;
 import by.epamtc.periodical_edition.entity.Role;
 
 import by.epamtc.periodical_edition.repository.BaseRepositoryTest;
-import by.epamtc.periodical_edition.repository.RoleRepository;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,8 +13,8 @@ import static org.junit.Assert.assertEquals;
 
 
 public class RoleRepositoryImplTest extends BaseRepositoryTest {
-    private RoleRepositoryImpl roleRepository;
-    private List<Role> roles;
+    private final RoleRepositoryImpl roleRepository;
+    private final List<Role> roles;
 
     public RoleRepositoryImplTest() {
         roles = new ArrayList<>();
@@ -76,11 +75,62 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
         assertEquals(expected, actual);
         assertEquals(expected, roleRepository.findById(actual.getId()));
 
+    }
 
+    @Test
+    public void delete_validData_shouldDeleteSubscription() {
+        //given
+        Role expected = roles.get(0);
+        Role actual = roleRepository.findById(1L);
+
+        Assert.assertEquals(expected, actual);
+
+        //when
+        boolean isDeleted = roleRepository.delete(1L);
+
+        //then
+        Assert.assertTrue(isDeleted);
+        Assert.assertNull(roleRepository.findById(1L));
 
     }
 
     @Test
-    public void delete() {
+    public void addRoleToUserById_validData_shouldAddRoleToUserById(){
+        //given
+        assertEquals(1, roleRepository.findRolesByUserId(2L).size());
+
+        //when
+        boolean isAdded = roleRepository.addRoleToUser(2L, 1L);
+
+        //then
+        Assert.assertTrue(isAdded);
+        assertEquals(2, roleRepository.findRolesByUserId(2L).size());
+
+    }
+
+    @Test
+    public void findRolesByUserId_validData_shouldReturnAllUserRoles(){
+        //given && when
+        int expected = 2;
+
+        //then
+        List<Role> actual = roleRepository.findRolesByUserId(1L);
+        assertEquals(expected, actual.size());
+
+    }
+
+    @Test
+    public void deleteRoleFromUser_validData_shouldDeleteRole(){
+        //given
+        List<Role> roles = roleRepository.findRolesByUserId(1L);
+        Assert.assertEquals(2, roles.size());
+
+        //when
+        boolean isDeleted = roleRepository.deleteRoleFromUser(1L, 1L);
+
+        //then
+        Assert.assertTrue(isDeleted);
+        assertEquals(1, roleRepository.findRolesByUserId(1L).size());
+
     }
 }
