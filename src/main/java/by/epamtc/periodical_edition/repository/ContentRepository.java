@@ -4,10 +4,11 @@ import by.epamtc.periodical_edition.entity.Content;
 
 import java.util.List;
 
-public interface ContentRepository {
-    Content findById(Long contentId);
-    List<Content> findAll();
-    boolean add(Content  content);
-    boolean update(Content content);
-    boolean delete(Long contentId);
+
+public interface ContentRepository extends BaseRepository<Content> {
+    List<Content> findContentBySubscriptionId(Long subscriptionId);
+
+    List<Content> findContentByPeriodicalEditionId(Long periodicalEditionId);
+
+    boolean deletePeriodicalEditionFromSubscription(Long subscriptionId, Long periodicalEditionId);
 }

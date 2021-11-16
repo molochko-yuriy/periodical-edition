@@ -4,11 +4,7 @@ import by.epamtc.periodical_edition.entity.PeriodicalEdition;
 
 import java.util.List;
 
-public interface PeriodicalEditionRepository {
-    PeriodicalEdition findById(Long periodicalEditionId);
-    List<PeriodicalEdition> findAll();
-    boolean add(PeriodicalEdition periodicalEdition);
-    boolean update(PeriodicalEdition periodicalEdition);
-    boolean delete(Long periodicalEditionId);
+public interface PeriodicalEditionRepository extends BaseRepository<PeriodicalEdition> {
+    List<PeriodicalEdition> findPeriodicalEditionsBySubscriptionId(Long subscriptionId);
 }
 
