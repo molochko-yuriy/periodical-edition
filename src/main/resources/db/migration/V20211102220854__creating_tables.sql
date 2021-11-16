@@ -30,7 +30,8 @@ CREATE TABLE IF NOT EXISTS user_role_link
             REFERENCES users (id),
     CONSTRAINT user_role_link_role
         FOREIGN KEY (role_id)
-            REFERENCES user_role (id)
+            REFERENCES user_role (id),
+            CONSTRAINT user_role_link_unique UNIQUE (user_id, role_id)
 );
 
 CREATE TABLE IF NOT EXISTS subscription
