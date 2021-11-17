@@ -71,7 +71,6 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
         //given
         User expected = new User(2L, "Petrov", "Oleg", "rider", "158963", "+375291548544", "petrov.a@mail.ru", 85);
         User actual = userRepository.findById(2L);
-
         Assert.assertEquals(users.get(1), actual);
 
         //when
@@ -97,7 +96,6 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
         //given
         User expected = users.get(0);
         User actual = userRepository.findById(1L);
-
         Assert.assertEquals(expected, actual);
         Assert.assertEquals(2, roleRepository.findRolesByUserId(actual.getId()).size());
         Assert.assertEquals(4, subscriptionRepository.findSubscriptionsByUserId(actual.getId()).size());

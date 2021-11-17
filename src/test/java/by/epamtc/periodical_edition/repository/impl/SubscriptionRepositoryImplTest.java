@@ -109,7 +109,7 @@ public class SubscriptionRepositoryImplTest extends BaseRepositoryTest {
 
     @Test
     public void findSubscriptionsByUserId_validData_shouldReturnAllSubscriptionsOfCertainUser() {
-        //given && when
+        //given
         List<Subscription> expected = subscriptions.stream()
                 .filter(subscription -> subscription.getUserId() == 1L)
                 .collect(Collectors.toList());
@@ -122,14 +122,11 @@ public class SubscriptionRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void findSubscriptionsThatIncludePeriodicalEditionById(){
-        //given
-        int expected = 2;
-
-        //when
+    public void findSubscriptionsThatIncludePeriodicalEditionById() {
+        //given && when
         List<Subscription> actual = subscriptionRepository.findSubscriptionsThatIncludePeriodicalEditionById(1L);
 
         //then
-        Assert.assertEquals(expected, actual.size());
+        Assert.assertEquals(2, actual.size());
     }
 }

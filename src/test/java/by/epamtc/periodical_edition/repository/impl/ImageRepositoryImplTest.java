@@ -14,7 +14,7 @@ public class ImageRepositoryImplTest extends BaseRepositoryTest {
     private final List<Image> images;
     private final ImageRepository imageRepository;
 
-    public ImageRepositoryImplTest(){
+    public ImageRepositoryImplTest() {
         images = new ArrayList<>();
         imageRepository = new ImageRepositoryImpl(getConnectionPool());
         images.add(new Image(1L, 1L, "D/im/cont"));
@@ -40,7 +40,7 @@ public class ImageRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void findAll_validData_shouldReturnImages() {
         //given && when
-        final List <Image> actual = imageRepository.findAll();
+        final List<Image> actual = imageRepository.findAll();
 
         //then
         Assert.assertEquals(images, actual);

@@ -53,8 +53,8 @@ public class PeriodicalEditionRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void add_validData_shouldAddNewPeriodicalEdition() {
         //given
-        PeriodicalEdition expected = new PeriodicalEdition(3L, 20, "some discription", "The Guardian", PeriodicalEditionType.MAGAZINE, Periodicity.WEEKLY);
-        PeriodicalEdition actual = new PeriodicalEdition(null, 20, "some discription", "The Guardian", PeriodicalEditionType.MAGAZINE, Periodicity.WEEKLY);
+        PeriodicalEdition expected = new PeriodicalEdition(3L, 20, "some description", "The Guardian", PeriodicalEditionType.MAGAZINE, Periodicity.WEEKLY);
+        PeriodicalEdition actual = new PeriodicalEdition(null, 20, "some description", "The Guardian", PeriodicalEditionType.MAGAZINE, Periodicity.WEEKLY);
 
         //when
         boolean isAdded = periodicalEditionRepository.add(actual);
@@ -68,13 +68,13 @@ public class PeriodicalEditionRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void update_validData_shouldUpdatePeriodicalEdition() {
         //given
-        PeriodicalEdition expected = new PeriodicalEdition(2L, 20, "some discription", "The Guardian", PeriodicalEditionType.MAGAZINE, Periodicity.WEEKLY);
+        PeriodicalEdition expected = new PeriodicalEdition(2L, 20, "some description", "The Guardian", PeriodicalEditionType.MAGAZINE, Periodicity.WEEKLY);
         PeriodicalEdition actual = periodicalEditionRepository.findById(2L);
 
         //when
         actual.setId(2L);
         actual.setPrice(20);
-        actual.setDescription("some discription");
+        actual.setDescription("some description");
         actual.setTitle("The Guardian");
         actual.setPeriodicalEditionType(PeriodicalEditionType.MAGAZINE);
         actual.setPeriodicity(Periodicity.WEEKLY);
@@ -91,7 +91,6 @@ public class PeriodicalEditionRepositoryImplTest extends BaseRepositoryTest {
         //given
         PeriodicalEdition expected = periodicalEditions.get(0);
         PeriodicalEdition actual = periodicalEditionRepository.findById(1L);
-
         Assert.assertEquals(expected, actual);
         Assert.assertEquals(2, contentRepository.findContentByPeriodicalEditionId(actual.getId()).size());
         Assert.assertEquals(3, imageRepository.findImageByPeriodicalEditionId(actual.getId()).size());
@@ -108,13 +107,10 @@ public class PeriodicalEditionRepositoryImplTest extends BaseRepositoryTest {
 
     @Test
     public void findPeriodicalEditionsBySubscriptionId_validData_shouldReturnPeriodicalEditions(){
-        //given
-        int expected = 1;
-
-        //when
+        //given && when
         List<PeriodicalEdition> actual  = periodicalEditionRepository.findPeriodicalEditionsBySubscriptionId(1L);
 
         //then
-        Assert.assertEquals(expected, actual.size());
+        Assert.assertEquals(1, actual.size());
     }
 }

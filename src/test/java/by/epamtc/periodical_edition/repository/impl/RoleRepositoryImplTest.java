@@ -38,7 +38,7 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void findAll_validData_shouldReturnRoles() {
         //given && when
-       final List<Role> actual = roleRepository.findAll();
+        final List<Role> actual = roleRepository.findAll();
 
         //then
         assertEquals(roles, actual);
@@ -92,7 +92,7 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void addRoleToUserById_validData_shouldAddRoleToUserById(){
+    public void addRoleToUserById_validData_shouldAddRoleToUserById() {
         //given
         assertEquals(1, roleRepository.findRolesByUserId(2L).size());
 
@@ -105,19 +105,16 @@ public class RoleRepositoryImplTest extends BaseRepositoryTest {
     }
 
     @Test
-    public void findRolesByUserId_validData_shouldReturnAllUserRoles(){
+    public void findRolesByUserId_validData_shouldReturnAllUserRoles() {
         //given && when
-        int expected = 2;
-
-        //when
         List<Role> actual = roleRepository.findRolesByUserId(1L);
 
         //then
-        assertEquals(expected, actual.size());
+        assertEquals(2, actual.size());
     }
 
     @Test
-    public void deleteRoleFromUser_validData_shouldDeleteRole(){
+    public void deleteRoleFromUser_validData_shouldDeleteRole() {
         //given
         List<Role> roles = roleRepository.findRolesByUserId(1L);
         Assert.assertEquals(2, roles.size());

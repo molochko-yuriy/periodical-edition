@@ -86,7 +86,6 @@ public class ContentRepositoryImplTest extends BaseRepositoryTest {
         //given
         Content expected = contents.get(0);
         Content actual = contentRepository.findById(1L);
-
         Assert.assertEquals(expected, actual);
 
         //when
@@ -128,9 +127,8 @@ public class ContentRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void deletePeriodicalEditionFromSubscription_validData_shouldDeletePeriodicalEdition() {
         //given
-        int expected = 1;
         List<Content> contents = contentRepository.findContentBySubscriptionId(3L);
-        Assert.assertEquals(expected, contents.size());
+        Assert.assertEquals(1, contents.size());
 
         //when
         boolean isDeleted = contentRepository.deletePeriodicalEditionFromSubscription(3L, 1L);
