@@ -1,6 +1,6 @@
 package by.epamtc.periodical_edition.repository.impl;
 
-import by.epamtc.periodical_edition.entity.PeriodicalEditionImage;
+import by.epamtc.periodical_edition.entity.Image;
 import by.epamtc.periodical_edition.repository.BaseRepositoryTest;
 import by.epamtc.periodical_edition.repository.ImageRepository;
 import org.junit.Assert;
@@ -11,27 +11,27 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ImageRepositoryImplTest extends BaseRepositoryTest {
-    private final List<PeriodicalEditionImage> periodicalEditionImages;
+    private final List<Image> images;
     private final ImageRepository imageRepository;
 
     public ImageRepositoryImplTest(){
-        periodicalEditionImages = new ArrayList<>();
+        images = new ArrayList<>();
         imageRepository = new ImageRepositoryImpl(getConnectionPool());
-        periodicalEditionImages.add(new PeriodicalEditionImage(1L, 1L, "D/im/cont"));
-        periodicalEditionImages.add(new PeriodicalEditionImage(2L, 2L, "D/if/nok"));
-        periodicalEditionImages.add(new PeriodicalEditionImage(3L, 1L, "A/im/cont"));
-        periodicalEditionImages.add(new PeriodicalEditionImage(4L, 2L, "A/if/nok"));
-        periodicalEditionImages.add(new PeriodicalEditionImage(5L, 1L, "B/im/cont"));
-        periodicalEditionImages.add(new PeriodicalEditionImage(6L, 2L, "B/if/nok"));
+        images.add(new Image(1L, 1L, "D/im/cont"));
+        images.add(new Image(2L, 2L, "D/if/nok"));
+        images.add(new Image(3L, 1L, "A/im/cont"));
+        images.add(new Image(4L, 2L, "A/if/nok"));
+        images.add(new Image(5L, 1L, "B/im/cont"));
+        images.add(new Image(6L, 2L, "B/if/nok"));
     }
 
     @Test
     public void findById_validData_shouldReturnImage() {
         //given
-        PeriodicalEditionImage expected = periodicalEditionImages.get(0);
+        Image expected = images.get(0);
 
         //when
-        PeriodicalEditionImage actual = imageRepository.findById(1L);
+        Image actual = imageRepository.findById(1L);
 
         //then
         Assert.assertEquals(expected, actual);
@@ -40,17 +40,17 @@ public class ImageRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void findAll_validData_shouldReturnImages() {
         //given && when
-        final List <PeriodicalEditionImage> actual = imageRepository.findAll();
+        final List <Image> actual = imageRepository.findAll();
 
         //then
-        Assert.assertEquals(periodicalEditionImages, actual);
+        Assert.assertEquals(images, actual);
     }
 
     @Test
     public void add_validData_shouldAddNewImage() {
         //given
-        PeriodicalEditionImage expected = new PeriodicalEditionImage(7L, 1L, "D/if/nok/k");
-        PeriodicalEditionImage actual = new PeriodicalEditionImage(null, 1L, "D/if/nok/k");
+        Image expected = new Image(7L, 1L, "D/if/nok/k");
+        Image actual = new Image(null, 1L, "D/if/nok/k");
 
         //when
         boolean isAdded = imageRepository.add(actual);
@@ -64,8 +64,8 @@ public class ImageRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void update_validData_ShouldReturnUpdateImage() {
         //given
-        PeriodicalEditionImage expected = new PeriodicalEditionImage(2L, 1L, "D/inf/nok/k");
-        PeriodicalEditionImage actual = imageRepository.findById(2L);
+        Image expected = new Image(2L, 1L, "D/inf/nok/k");
+        Image actual = imageRepository.findById(2L);
 
         //when
         actual.setId(2L);
@@ -82,8 +82,8 @@ public class ImageRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void delete_validData_shouldDeleteImage() {
         //given
-        PeriodicalEditionImage expected = periodicalEditionImages.get(0);
-        PeriodicalEditionImage actual = imageRepository.findById(1L);
+        Image expected = images.get(0);
+        Image actual = imageRepository.findById(1L);
         Assert.assertEquals(expected, actual);
 
         //when
@@ -97,12 +97,12 @@ public class ImageRepositoryImplTest extends BaseRepositoryTest {
     @Test
     public void findImageByPeriodicalEditionId_validData_shouldReturnImagesOfCertainPeriodicalEdition() {
         //given
-        List<PeriodicalEditionImage> expected = periodicalEditionImages.stream()
-                .filter(periodicalEditionImage -> periodicalEditionImage.getPeriodicalEditionId() == 1L)
+        List<Image> expected = images.stream()
+                .filter(image -> image.getPeriodicalEditionId() == 1L)
                 .collect(Collectors.toList());
 
         //when
-        List<PeriodicalEditionImage> actual = imageRepository.findImageByPeriodicalEditionId(1L);
+        List<Image> actual = imageRepository.findImageByPeriodicalEditionId(1L);
 
         //then
         Assert.assertEquals(expected, actual);

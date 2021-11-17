@@ -1,6 +1,6 @@
 package by.epamtc.periodical_edition.repository.impl;
 
-import by.epamtc.periodical_edition.entity.PeriodicalEditionImage;
+import by.epamtc.periodical_edition.entity.Image;
 import by.epamtc.periodical_edition.repository.ImageRepository;
 
 import javax.sql.DataSource;
@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImageRepositoryImpl extends AbstractRepositoryImpl<PeriodicalEditionImage> implements ImageRepository {
+public class ImageRepositoryImpl extends AbstractRepositoryImpl<Image> implements ImageRepository {
     private static final String IMAGE_PATH_COLUMN = "image_path";
     private static final String PERIODICAL_EDITION_ID_COLUMN = "periodical_edition_id";
     private static final String SELECT_BY_ID_QUERY = "SELECT * FROM periodical_edition_image WHERE id = ?";
@@ -53,31 +53,31 @@ public class ImageRepositoryImpl extends AbstractRepositoryImpl<PeriodicalEditio
     }
 
     @Override
-    protected PeriodicalEditionImage construct(ResultSet resultSet) throws SQLException {
-        PeriodicalEditionImage periodicalEditionImage = new PeriodicalEditionImage();
-        periodicalEditionImage.setId(resultSet.getLong(ID_COLUMN));
-        periodicalEditionImage.setImagePath(resultSet.getString(IMAGE_PATH_COLUMN));
-        periodicalEditionImage.setPeriodicalEditionId(resultSet.getLong(PERIODICAL_EDITION_ID_COLUMN));
-        return periodicalEditionImage;
+    protected Image construct(ResultSet resultSet) throws SQLException {
+        Image image = new Image();
+        image.setId(resultSet.getLong(ID_COLUMN));
+        image.setImagePath(resultSet.getString(IMAGE_PATH_COLUMN));
+        image.setPeriodicalEditionId(resultSet.getLong(PERIODICAL_EDITION_ID_COLUMN));
+        return image;
     }
 
     @Override
-    protected void settingPreparedParameter(PreparedStatement preparedStatement, PeriodicalEditionImage periodicalEditionImage) throws SQLException {
-        preparedStatement.setString(1, periodicalEditionImage.getImagePath());
-        preparedStatement.setLong(2, periodicalEditionImage.getPeriodicalEditionId());
+    protected void settingPreparedParameter(PreparedStatement preparedStatement, Image image) throws SQLException {
+        preparedStatement.setString(1, image.getImagePath());
+        preparedStatement.setLong(2, image.getPeriodicalEditionId());
     }
 
-    public List<PeriodicalEditionImage> findImageByPeriodicalEditionId(Long periodicalEditionId) {
+    public List<Image> findImageByPeriodicalEditionId(Long periodicalEditionId) {
         try (Connection connection = getDataSource().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_IMAGE_BY_PERIODICAL_EDITION_ID)
         ) {
             preparedStatement.setLong(1, periodicalEditionId);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                List<PeriodicalEditionImage> periodicalEditionImages = new ArrayList<>();
+                List<Image> images = new ArrayList<>();
                 while (resultSet.next()) {
-                    periodicalEditionImages.add(construct(resultSet));
+                    images.add(construct(resultSet));
                 }
-                return periodicalEditionImages;
+                return images;
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
