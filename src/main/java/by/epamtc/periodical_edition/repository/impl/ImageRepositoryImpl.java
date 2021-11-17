@@ -14,6 +14,7 @@ import java.util.List;
 public class ImageRepositoryImpl extends AbstractRepositoryImpl<Image> implements ImageRepository {
     private static final String IMAGE_PATH_COLUMN = "image_path";
     private static final String PERIODICAL_EDITION_ID_COLUMN = "periodical_edition_id";
+
     private static final String SELECT_BY_ID_QUERY = "SELECT * FROM periodical_edition_image WHERE id = ?";
     private static final String SELECT_ALL_QUERY = "SELECT * FROM periodical_edition_image";
     private static final String INSERT_QUERY = "INSERT INTO periodical_edition_image ( image_path, " +
@@ -21,6 +22,7 @@ public class ImageRepositoryImpl extends AbstractRepositoryImpl<Image> implement
     private static final String UPDATE_QUERY = "UPDATE periodical_edition_image SET  image_path = ?, " +
             "periodical_edition_id = ? WHERE id = %d";
     private static final String DELETE_QUERY = "DELETE FROM periodical_edition_image WHERE id = ?";
+
     private static final String SELECT_IMAGE_BY_PERIODICAL_EDITION_ID = "SELECT * FROM periodical_edition_image WHERE periodical_edition_id = ?";
 
     public ImageRepositoryImpl(DataSource datasource) {
@@ -67,6 +69,7 @@ public class ImageRepositoryImpl extends AbstractRepositoryImpl<Image> implement
         preparedStatement.setLong(2, image.getPeriodicalEditionId());
     }
 
+    @Override
     public List<Image> findImageByPeriodicalEditionId(Long periodicalEditionId) {
         try (Connection connection = getDataSource().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_IMAGE_BY_PERIODICAL_EDITION_ID)

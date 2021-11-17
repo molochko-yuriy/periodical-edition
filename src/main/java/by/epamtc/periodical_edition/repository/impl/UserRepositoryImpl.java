@@ -29,7 +29,6 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     private static final String DELETE_LINK_FROM_USER_ROLE_LINK_QUERY = "DELETE FROM user_role_link WHERE user_id = ?";
     private static final String DELETE_LINK_FROM_REVIEW_QUERY = "DELETE FROM review WHERE user_id = ?";
     private static final String DELETE_LINK_FROM_SUBSCRIPTION_QUERY = "DELETE FROM subscription WHERE user_id = ?";//3
-
     private static final String SELECT_FROM_SUBSCRIPTION_BY_USER_ID = "SELECT * FROM subscription WHERE user_id = ?";//1 list
     private static final String DELETE_LINK_FROM_CONTENT_QUERY = "DELETE FROM content WHERE subscription_id = ?"; //2
 
@@ -62,7 +61,7 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
         return DELETE_QUERY;
     }
 
-
+    @Override
     protected User construct(ResultSet resultSet) throws SQLException {
         User user = new User();
         user.setId(resultSet.getLong(ID_COLUMN));

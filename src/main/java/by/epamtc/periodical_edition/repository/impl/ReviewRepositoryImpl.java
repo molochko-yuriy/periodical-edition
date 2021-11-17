@@ -76,10 +76,12 @@ public class ReviewRepositoryImpl extends AbstractRepositoryImpl<Review> impleme
         preparedStatement.setLong(4, review.getPeriodicalEditionId());
     }
 
+    @Override
     public List<Review> findReviewByPeriodicalEditionId(Long periodicalEditionId) {
         return findReview(SELECT_REVIEW_BY_PERIODICAL_EDITION_ID, periodicalEditionId);
     }
 
+    @Override
     public List<Review> findReviewByUserId(Long userId) {
         return findReview(SELECT_REVIEW_BY_USER_ID, userId);
     }

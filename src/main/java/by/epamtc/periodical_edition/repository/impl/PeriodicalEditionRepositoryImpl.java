@@ -19,6 +19,7 @@ public class PeriodicalEditionRepositoryImpl extends AbstractRepositoryImpl<Peri
     private static final String PERIODICITY_COLUMN = "periodicity";
     private static final String PERIODICAL_EDITION_DESCRIPTION_COLUMN = "periodical_edition_description";
     private static final String TITLE_COLUMN = "title";
+
     private static final String SELECT_BY_ID_QUERY = "SELECT * FROM periodical_edition WHERE id = ?";
     private static final String SELECT_ALL_QUERY = "SELECT * FROM periodical_edition";
     private static final String INSERT_QUERY = "INSERT INTO periodical_edition (" +
@@ -62,7 +63,6 @@ public class PeriodicalEditionRepositoryImpl extends AbstractRepositoryImpl<Peri
     protected String defineDeleteQuery() {
         return DELETE_QUERY;
     }
-
 
     protected PeriodicalEdition construct(ResultSet resultSet) throws SQLException {
         PeriodicalEdition periodicalEdition = new PeriodicalEdition();

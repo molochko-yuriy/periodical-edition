@@ -54,6 +54,7 @@ public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements 
         return DELETE_QUERY;
     }
 
+    @Override
     protected Role construct(ResultSet resultSet) throws SQLException {
         Role role = new Role();
         role.setId(resultSet.getLong(ID_COLUMN));

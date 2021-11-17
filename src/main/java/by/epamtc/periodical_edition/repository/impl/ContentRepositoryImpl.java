@@ -81,10 +81,12 @@ public class ContentRepositoryImpl extends AbstractRepositoryImpl<Content> imple
         preparedStatement.setLong(5, content.getPeriodicalEditionId());
     }
 
+    @Override
     public List<Content> findContentBySubscriptionId(Long subscriptionId) {
         return findContent(SELECT_CONTENT_BY_SUBSCRIPTION_ID, subscriptionId);
     }
 
+    @Override
     public List<Content> findContentByPeriodicalEditionId(Long periodicalEditionId) {
         return findContent(SELECT_CONTENT_BY_PERIODICAL_EDITION_ID, periodicalEditionId);
     }

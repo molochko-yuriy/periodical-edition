@@ -109,8 +109,7 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity<Long>> impleme
 
     @Override
     public boolean delete(Long id) {
-        try (Connection connection = dataSource.getConnection()
-        ) {
+        try (Connection connection = dataSource.getConnection()) {
             try {
                 connection.setAutoCommit(false);
                 doDeletionOperations(connection, id);

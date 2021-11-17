@@ -25,7 +25,6 @@ public class SubscriptionRepositoryImpl extends AbstractRepositoryImpl<Subscript
 
     private static final String DELETE_FROM_CONTENT_QUERY = "DELETE FROM content WHERE subscription_id =?";
     private static final String SELECT_SUBSCRIPTIONS_BY_USER_ID = "SELECT * FROM subscription WHERE user_id = ?";
-
     private static final String SELECT_SUBSCRIPTIONS_BY_PERIODICAL_EDITION_ID = "SELECT * FROM subscription s LEFT JOIN " +
             "content c ON s.ID = c.SUBSCRIPTION_ID WHERE PERIODICAL_EDITION_ID = ?";
 
