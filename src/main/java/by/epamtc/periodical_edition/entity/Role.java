@@ -3,7 +3,7 @@ package by.epamtc.periodical_edition.entity;
 public class Role extends BaseEntity<Long>{
     private String roleName;
 
-    public Role (){};
+    public Role (){}
 
     public Role(Long id, String roleName) {
         super.setId(id);
@@ -33,10 +33,8 @@ public class Role extends BaseEntity<Long>{
         } else if (!getId().equals(aThat.getId())) { return false;}
 
         if (getRoleName() == null) {
-            if (aThat.getRoleName()  != null) { return false;}
-        } else if (!getRoleName().equals(aThat.getRoleName())) { return false;}
-
-        return true;
+            return aThat.getRoleName() == null;
+        } else return getRoleName().equals(aThat.getRoleName());
     }
 
     @Override

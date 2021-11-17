@@ -1,6 +1,6 @@
 package by.epamtc.periodical_edition.entity;
 
-public abstract class BaseEntity <E> {
+public abstract class BaseEntity<E> {
     private E id;
 
     public E getId() {

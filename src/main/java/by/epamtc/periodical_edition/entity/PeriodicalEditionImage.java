@@ -1,10 +1,12 @@
 package by.epamtc.periodical_edition.entity;
 
 public class PeriodicalEditionImage extends BaseEntity<Long> {
-    private  Long periodicalEditionId;
+    private Long periodicalEditionId;
     private String imagePath;
 
-    public PeriodicalEditionImage(){};
+    public PeriodicalEditionImage() {
+    }
+
     public PeriodicalEditionImage(Long id, Long periodicalEditionId, String imagePath) {
         super.setId(id);
         this.periodicalEditionId = periodicalEditionId;
@@ -29,24 +31,21 @@ public class PeriodicalEditionImage extends BaseEntity<Long> {
 
     @Override
     public boolean equals(Object object) {
-        if (this == object) { return true;}
+        if (this == object) {return true;}
         if (object == null || getClass() != object.getClass()) {return false;}
+
         PeriodicalEditionImage aThat = (PeriodicalEditionImage) object;
 
-        if (getId() == null) {
-            if (aThat.getId()  != null) { return false;}
-        } else if (!getId().equals(aThat.getId())) { return false;}
+        if (getId() == null) {if (aThat.getId() != null) {return false;}
+        } else if (!getId().equals(aThat.getId())) {return false;}
 
         if (getImagePath() == null) {
-            if (aThat.getImagePath()  != null) { return false;}
-        } else if (!getImagePath().equals(aThat.getImagePath())) { return false;}
+            if (aThat.getImagePath() != null) {return false;}
+        } else if (!getImagePath().equals(aThat.getImagePath())) {return false;}
 
         if (getPeriodicalEditionId() == null) {
-            if (aThat.getPeriodicalEditionId()  != null) { return false;}
-        } else if (!getPeriodicalEditionId().equals(aThat.getPeriodicalEditionId())) { return false;}
-
-        return true;
-
+            return aThat.getPeriodicalEditionId() == null;
+        } else return getPeriodicalEditionId().equals(aThat.getPeriodicalEditionId());
     }
 
     @Override
@@ -58,6 +57,7 @@ public class PeriodicalEditionImage extends BaseEntity<Long> {
         result = prime * result + (getPeriodicalEditionId() != null ? getPeriodicalEditionId().hashCode() : 0);
         return result;
     }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "{" +
