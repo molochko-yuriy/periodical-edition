@@ -29,7 +29,6 @@ public class SubscriptionRepositoryImpl extends AbstractRepositoryImpl<Subscript
     private static final String SELECT_SUBSCRIPTIONS_BY_PERIODICAL_EDITION_ID = "SELECT * FROM subscription s LEFT JOIN " +
             "content c ON s.ID = c.SUBSCRIPTION_ID WHERE PERIODICAL_EDITION_ID = ?";
 
-
     public SubscriptionRepositoryImpl(DataSource dataSource) {
         super(dataSource);
     }

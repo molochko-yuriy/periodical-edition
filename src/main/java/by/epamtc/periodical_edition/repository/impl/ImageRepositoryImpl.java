@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PeriodicalEditionImageRepositoryImpl extends AbstractRepositoryImpl<PeriodicalEditionImage> implements ImageRepository {
+public class ImageRepositoryImpl extends AbstractRepositoryImpl<PeriodicalEditionImage> implements ImageRepository {
     private static final String IMAGE_PATH_COLUMN = "image_path";
     private static final String PERIODICAL_EDITION_ID_COLUMN = "periodical_edition_id";
     private static final String SELECT_BY_ID_QUERY = "SELECT * FROM periodical_edition_image WHERE id = ?";
@@ -23,7 +23,7 @@ public class PeriodicalEditionImageRepositoryImpl extends AbstractRepositoryImpl
     private static final String DELETE_QUERY = "DELETE FROM periodical_edition_image WHERE id = ?";
     private static final String SELECT_IMAGE_BY_PERIODICAL_EDITION_ID = "SELECT * FROM periodical_edition_image WHERE periodical_edition_id = ?";
 
-    public PeriodicalEditionImageRepositoryImpl(DataSource datasource) {
+    public ImageRepositoryImpl(DataSource datasource) {
         super(datasource);
     }
 

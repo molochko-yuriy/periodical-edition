@@ -84,6 +84,11 @@ public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements 
         return addRoleToUserOrDeleteRoleFromUser(INSERT_ROLE_TO_USER_BY_ID, userId,roleId);
     }
 
+    @Override
+    public boolean deleteRoleFromUser(Long userId, Long roleId) {
+        return addRoleToUserOrDeleteRoleFromUser(DELETE_ROLE_FROM_USER_ROLE_LINK, userId, roleId);
+    }
+
     private boolean addRoleToUserOrDeleteRoleFromUser(String query, Long firstId, Long secondId){
         try (Connection connection = getDataSource().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)
@@ -114,10 +119,5 @@ public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements 
             ex.printStackTrace();
         }
         return new ArrayList<>();
-    }
-
-    @Override
-    public boolean deleteRoleFromUser(Long userId, Long roleId) {
-        return addRoleToUserOrDeleteRoleFromUser(DELETE_ROLE_FROM_USER_ROLE_LINK, userId, roleId);
     }
 }

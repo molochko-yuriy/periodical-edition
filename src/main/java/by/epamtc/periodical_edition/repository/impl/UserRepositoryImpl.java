@@ -1,7 +1,7 @@
 package by.epamtc.periodical_edition.repository.impl;
 
 import by.epamtc.periodical_edition.entity.User;
-import by.epamtc.periodical_edition.repository.UserRepository;
+import by.epamtc.periodical_edition.repository.BaseRepository;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -9,7 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements UserRepository {
+public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements BaseRepository<User> {
     private static final String LAST_NAME_COLUMN = "last_name";
     private static final String FIRST_NAME_COLUMN = "first_name";
     private static final String LOGIN_COLUMN = "login";
@@ -118,13 +118,16 @@ public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements 
     }
 
     private void deleteLinksFromContent(Connection connection, Long userId) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement(SELECT_FROM_SUBSCRIPTION_BY_USER_ID);
-        preparedStatement.setLong(1, userId);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            preparedStatement = connection.prepareStatement(DELETE_LINK_FROM_CONTENT_QUERY);
-            preparedStatement.setLong(1, resultSet.getLong(ID_COLUMN));
-            preparedStatement.executeUpdate();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_FROM_SUBSCRIPTION_BY_USER_ID)) {
+            preparedStatement.setLong(1, userId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    try (PreparedStatement preparedStatementToDelete = connection.prepareStatement(DELETE_LINK_FROM_CONTENT_QUERY)) {
+                        preparedStatementToDelete.setLong(1, resultSet.getLong(ID_COLUMN));
+                        preparedStatementToDelete.executeUpdate();
+                    }
+                }
+            }
         }
     }
 }
