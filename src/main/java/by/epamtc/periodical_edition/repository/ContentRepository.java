@@ -7,8 +7,6 @@ import java.util.List;
 
 public interface ContentRepository extends BaseRepository<Content> {
     List<Content> findContentBySubscriptionId(Long subscriptionId);
-
     List<Content> findContentByPeriodicalEditionId(Long periodicalEditionId);
-
     boolean deletePeriodicalEditionFromSubscription(Long subscriptionId, Long periodicalEditionId);
 }
