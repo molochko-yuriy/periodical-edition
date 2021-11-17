@@ -28,5 +28,4 @@ public class BaseRepositoryTest {
     public JdbcConnectionPool getConnectionPool() {
         return connectionPool;
     }
-
 }

@@ -35,11 +35,13 @@ public class SubscriptionRepositoryImplTest extends BaseRepositoryTest {
 
     @Test
     public void findById_validData_shouldReturnUser() {
-        //given && when
+        //given
         Subscription expected = subscriptions.get(0);
 
-        //then
+        //when
         Subscription actual = subscriptionRepository.findById(1L);
+
+        //then
         Assert.assertEquals(expected, actual);
     }
 
@@ -50,7 +52,6 @@ public class SubscriptionRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assert.assertEquals(subscriptions, actual);
-
     }
 
     @Test
@@ -66,8 +67,6 @@ public class SubscriptionRepositoryImplTest extends BaseRepositoryTest {
         Assert.assertTrue(isAdded);
         Assert.assertEquals(expected, actual);
         Assert.assertEquals(expected, subscriptionRepository.findById(actual.getId()));
-
-
     }
 
     @Test
@@ -87,8 +86,6 @@ public class SubscriptionRepositoryImplTest extends BaseRepositoryTest {
         Assert.assertTrue(isUpdated);
         Assert.assertEquals(expected, actual);
         Assert.assertEquals(expected, subscriptionRepository.findById(actual.getId()));
-
-
     }
 
     @Test
@@ -102,11 +99,11 @@ public class SubscriptionRepositoryImplTest extends BaseRepositoryTest {
 
         //when
         boolean isDeleted = subscriptionRepository.delete(actual.getId());
+
+        //then
         Assert.assertTrue(isDeleted);
         Assert.assertNull(subscriptionRepository.findById(1L));
         Assert.assertEquals(0, contentRepository.findContentBySubscriptionId(actual.getId()).size());
-
-
     }
 
     @Test
@@ -116,18 +113,22 @@ public class SubscriptionRepositoryImplTest extends BaseRepositoryTest {
                 .filter(subscription -> subscription.getUserId() == 1L)
                 .collect(Collectors.toList());
 
-        //then
+        //when
         List<Subscription> actual = subscriptionRepository.findSubscriptionsByUserId(1L);
+
+        //then
         Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void findSubscriptionsThatIncludePeriodicalEditionById(){
-        //given && when
+        //given
         int expected = 2;
 
-        //then
+        //when
         List<Subscription> actual = subscriptionRepository.findSubscriptionsThatIncludePeriodicalEditionById(1L);
+
+        //then
         Assert.assertEquals(expected, actual.size());
     }
 }

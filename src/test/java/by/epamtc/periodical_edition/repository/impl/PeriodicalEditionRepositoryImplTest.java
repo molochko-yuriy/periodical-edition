@@ -41,7 +41,7 @@ public class PeriodicalEditionRepositoryImplTest extends BaseRepositoryTest {
 
     @Test
     public void findAll_validData_shouldReturnPeriodicalEditions() {
-        //given
+        //given && when
         final List<PeriodicalEdition> actual = periodicalEditionRepository.findAll();
 
         //then
@@ -106,11 +106,13 @@ public class PeriodicalEditionRepositoryImplTest extends BaseRepositoryTest {
 
     @Test
     public void findPeriodicalEditionsBySubscriptionId_validData_shouldReturnPeriodicalEditions(){
-        //given && when
+        //given
         int expected = 1;
 
-        //then
+        //when
         List<PeriodicalEdition> actual  = periodicalEditionRepository.findPeriodicalEditionsBySubscriptionId(1L);
+
+        //then
         Assert.assertEquals(expected, actual.size());
     }
 }

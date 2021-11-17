@@ -23,7 +23,6 @@ public class ContentRepositoryImplTest extends BaseRepositoryTest {
         contents.add(new Content(4L, LocalDate.of(2021, 9, 8), LocalDate.of(2021, 10, 8), 50, 4L, 2L));
     }
 
-
     @Test
     public void findById_validData_shouldReturnContent() {
         //given
@@ -34,17 +33,15 @@ public class ContentRepositoryImplTest extends BaseRepositoryTest {
 
         //then
         Assert.assertEquals(expected, actual);
-
     }
 
     @Test
     public void findAll_validData_shouldReturnContents() {
-        //given
+        //given && when
         final List<Content> actual = contentRepository.findAll();
 
         //then
         Assert.assertEquals(contents, actual);
-
     }
 
     @Test
@@ -101,27 +98,29 @@ public class ContentRepositoryImplTest extends BaseRepositoryTest {
 
     @Test
     public void findContentBySubscriptionId_validData_shouldReturnContentOfCertainSubscription() {
-        //given && when
+        //given
         List<Content> expected = contents.stream()
                 .filter(content -> content.getSubscriptionId() == 1L)
                 .collect(Collectors.toList());
 
-        //then
+        //when
         List<Content> actual = contentRepository.findContentBySubscriptionId(1L);
 
+        //then
         Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void findContentByPeriodicalEditionId_validData_shouldReturnContentOfCertainPeriodicalEdition() {
-        //given && when
+        //given
         List<Content> expected = contents.stream()
                 .filter(content -> content.getPeriodicalEditionId() == 1L)
                 .collect(Collectors.toList());
 
-        //then
+        //when
         List<Content> actual = contentRepository.findContentByPeriodicalEditionId(1L);
 
+        //then
         Assert.assertEquals(expected, actual);
     }
 
@@ -138,6 +137,5 @@ public class ContentRepositoryImplTest extends BaseRepositoryTest {
         //then
         Assert.assertTrue(isDeleted);
         Assert.assertEquals(0, contentRepository.findContentBySubscriptionId(3L).size());
-
     }
 }

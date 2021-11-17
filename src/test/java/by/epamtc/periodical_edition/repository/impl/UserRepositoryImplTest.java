@@ -27,9 +27,7 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
                 "7892152", "alecsandr.a@mail.ru", 25));
         subscriptionRepository = new SubscriptionRepositoryImpl(getConnectionPool());
         roleRepository = new RoleRepositoryImpl(getConnectionPool());
-
     }
-
 
     @Test
     public void findById_validData_shouldReturnUser() {

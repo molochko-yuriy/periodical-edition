@@ -38,7 +38,7 @@ public class ReviewRepositoryImplTest extends BaseRepositoryTest {
 
     @Test
     public void findAll_validData_shouldReturnReviews() {
-        //given
+        //given && when
         final List<Review> actual = reviewRepository.findAll();
 
         // then
@@ -53,11 +53,11 @@ public class ReviewRepositoryImplTest extends BaseRepositoryTest {
 
         //when
         boolean isAdded = reviewRepository.add(actual);
+
         //then
         Assert.assertTrue(isAdded);
         Assert.assertEquals(expected, actual);
         Assert.assertEquals(expected, reviewRepository.findById(actual.getId()));
-
     }
 
     @Test
@@ -78,7 +78,6 @@ public class ReviewRepositoryImplTest extends BaseRepositoryTest {
         Assert.assertTrue(isUpdated);
         Assert.assertEquals(expected, actual);
         Assert.assertEquals(expected, reviewRepository.findById(actual.getId()));
-
     }
 
     @Test
@@ -94,33 +93,33 @@ public class ReviewRepositoryImplTest extends BaseRepositoryTest {
         //then
         Assert.assertTrue(isDeleted);
         Assert.assertNull(reviewRepository.findById(1L));
-
     }
 
     @Test
     public void findReviewByPeriodicalEditionId_validData_shouldReturnReviewsAboutCertainPeriodicalEdition() {
-        //given && when
+        //given
         List<Review> expected = reviews.stream()
                 .filter(review -> review.getPeriodicalEditionId() == 1L)
                 .collect(Collectors.toList());
-        //then
+
+        //when
         List<Review> actual = reviewRepository.findReviewByPeriodicalEditionId(1L);
 
+        //then
         Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void findReviewByUserId_validData_shouldReturnReviewsAboutCertainPeriodicalEditionFromCertainUser() {
-
-        //given && when
+        //given
         List<Review> expected = reviews.stream()
                 .filter(review -> review.getUserId() == 1L)
                 .collect(Collectors.toList());
 
-        //then
+        //when
         List<Review> actual = reviewRepository.findReviewByUserId(1L);
 
+        //then
         Assert.assertEquals(expected, actual);
     }
-
 }

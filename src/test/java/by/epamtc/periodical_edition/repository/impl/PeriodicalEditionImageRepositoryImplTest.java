@@ -38,7 +38,7 @@ public class PeriodicalEditionImageRepositoryImplTest extends BaseRepositoryTest
 
     @Test
     public void findAll_validData_shouldReturnImages() {
-        //given
+        //given && when
         final List <PeriodicalEditionImage> actual = imageRepository.findAll();
 
         //then
@@ -83,7 +83,6 @@ public class PeriodicalEditionImageRepositoryImplTest extends BaseRepositoryTest
         //given
         PeriodicalEditionImage expected = periodicalEditionImages.get(0);
         PeriodicalEditionImage actual = imageRepository.findById(1L);
-
         Assert.assertEquals(expected, actual);
 
         //when
@@ -92,19 +91,19 @@ public class PeriodicalEditionImageRepositoryImplTest extends BaseRepositoryTest
         //then
         Assert.assertTrue(isDeleted);
         Assert.assertNull(imageRepository.findById(1L));
-
     }
 
     @Test
     public void findImageByPeriodicalEditionId_validData_shouldReturnImagesOfCertainPeriodicalEdition() {
-        //given && when
+        //given
         List<PeriodicalEditionImage> expected = periodicalEditionImages.stream()
                 .filter(periodicalEditionImage -> periodicalEditionImage.getPeriodicalEditionId() == 1L)
                 .collect(Collectors.toList());
 
-        //then
+        //when
         List<PeriodicalEditionImage> actual = imageRepository.findImageByPeriodicalEditionId(1L);
+
+        //then
         Assert.assertEquals(expected, actual);
     }
-
 }
