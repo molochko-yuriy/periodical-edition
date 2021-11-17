@@ -4,10 +4,12 @@ import by.epamtc.periodical_edition.entity.User;
 import by.epamtc.periodical_edition.repository.UserRepository;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class UserRepositoryImpl extends AbstractRepositoryImpl<User> implements UserRepository {
-    private static final String ID_COLUMN = "id";
     private static final String LAST_NAME_COLUMN = "last_name";
     private static final String FIRST_NAME_COLUMN = "first_name";
     private static final String LOGIN_COLUMN = "login";

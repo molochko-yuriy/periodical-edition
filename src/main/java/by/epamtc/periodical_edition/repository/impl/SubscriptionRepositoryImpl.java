@@ -91,29 +91,19 @@ public class SubscriptionRepositoryImpl extends AbstractRepositoryImpl<Subscript
 
     @Override
     public List<Subscription> findSubscriptionsByUserId(Long userId) {
-        try (Connection connection = getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_SUBSCRIPTIONS_BY_USER_ID)
-        ) {
-            preparedStatement.setLong(1, userId);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                List<Subscription> subscriptions = new ArrayList<>();
-                while (resultSet.next()) {
-                    subscriptions.add(construct(resultSet));
-                }
-                return subscriptions;
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return new ArrayList<>();
+        return findSubscription(SELECT_SUBSCRIPTIONS_BY_USER_ID, userId);
     }
 
     @Override
     public List<Subscription> findSubscriptionsThatIncludePeriodicalEditionById(Long periodicalEditionId) {
+        return findSubscription(SELECT_SUBSCRIPTIONS_BY_PERIODICAL_EDITION_ID, periodicalEditionId);
+    }
+
+    private List<Subscription> findSubscription (String query, Long id){
         try (Connection connection = getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_SUBSCRIPTIONS_BY_PERIODICAL_EDITION_ID)
+             PreparedStatement preparedStatement = connection.prepareStatement(query)
         ) {
-            preparedStatement.setLong(1, periodicalEditionId);
+            preparedStatement.setLong(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 List<Subscription> subscriptions = new ArrayList<>();
                 while (resultSet.next()) {
@@ -126,5 +116,4 @@ public class SubscriptionRepositoryImpl extends AbstractRepositoryImpl<Subscript
         }
         return new ArrayList<>();
     }
-
 }

@@ -4,12 +4,14 @@ import by.epamtc.periodical_edition.entity.Review;
 import by.epamtc.periodical_edition.repository.ReviewRepository;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ReviewRepositoryImpl extends AbstractRepositoryImpl<Review> implements ReviewRepository {
-    private static final String ID_COLUMN = "id";
     private static final String USER_COMMENT_COLUMN = "user_comment";
     private static final String RATING_COLUMN = "rating";
     private static final String USER_ID_COLUMN = "user_id";
@@ -99,6 +101,4 @@ public class ReviewRepositoryImpl extends AbstractRepositoryImpl<Review> impleme
         }
         return new ArrayList<>();
     }
-
-
 }

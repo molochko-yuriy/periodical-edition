@@ -4,7 +4,10 @@ import by.epamtc.periodical_edition.entity.Role;
 import by.epamtc.periodical_edition.repository.RoleRepository;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,11 +81,15 @@ public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements 
 
     @Override
     public boolean addRoleToUser(Long userId, Long roleId) {
+        return addRoleToUserOrDeleteRoleFromUser(INSERT_ROLE_TO_USER_BY_ID, userId,roleId);
+    }
+
+    private boolean addRoleToUserOrDeleteRoleFromUser(String query, Long firstId, Long secondId){
         try (Connection connection = getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_ROLE_TO_USER_BY_ID)
+             PreparedStatement preparedStatement = connection.prepareStatement(query)
         ) {
-            preparedStatement.setLong(1, userId);
-            preparedStatement.setLong(2, roleId);
+            preparedStatement.setLong(1, firstId);
+            preparedStatement.setLong(2, secondId);
             return preparedStatement.executeUpdate() == 1;
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -111,17 +118,6 @@ public class RoleRepositoryImpl extends AbstractRepositoryImpl<Role> implements 
 
     @Override
     public boolean deleteRoleFromUser(Long userId, Long roleId) {
-        try (Connection connection = getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_ROLE_FROM_USER_ROLE_LINK)
-        ) {
-            preparedStatement.setLong(1, userId);
-            preparedStatement.setLong(2, roleId);
-            return preparedStatement.executeUpdate() == 1;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return false;
+        return addRoleToUserOrDeleteRoleFromUser(DELETE_ROLE_FROM_USER_ROLE_LINK, userId, roleId);
     }
-
-
 }

@@ -6,12 +6,14 @@ import by.epamtc.periodical_edition.enums.Periodicity;
 import by.epamtc.periodical_edition.repository.PeriodicalEditionRepository;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PeriodicalEditionRepositoryImpl extends AbstractRepositoryImpl<PeriodicalEdition> implements PeriodicalEditionRepository {
-    private static final String ID_COLUMN = "id";
     private static final String PERIODICAL_EDITION_TYPE_COLUMN = "periodical_edition_type";
     private static final String PRICE_COLUMN = "price";
     private static final String PERIODICITY_COLUMN = "periodicity";
@@ -32,10 +34,8 @@ public class PeriodicalEditionRepositoryImpl extends AbstractRepositoryImpl<Peri
     private static final String SELECT_PERIODICAL_EDITION_BY_SUBSCRIPTION_ID = "SELECT * FROM periodical_edition pe LEFT JOIN " +
             "content c ON pe.id = c.periodical_edition_id  WHERE SUBSCRIPTION_ID= ?";
 
-
     public PeriodicalEditionRepositoryImpl(DataSource dataSource) {
         super(dataSource);
-
     }
 
     @Override

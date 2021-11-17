@@ -134,5 +134,4 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity<Long>> impleme
             preparedStatement.executeUpdate();
         }
     }
-
 }

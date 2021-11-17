@@ -4,17 +4,20 @@ import by.epamtc.periodical_edition.entity.Content;
 import by.epamtc.periodical_edition.repository.ContentRepository;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Date;
 
 public class ContentRepositoryImpl extends AbstractRepositoryImpl<Content> implements ContentRepository {
-    public static final String ID_COLUMN = "id";
-    public static final String START_DATE_COLUMN = "start_date";
-    public static final String EXPIRATION_DATE_COLUMN = "expiration_date";
-    public static final String PRICE_COLUMN = "price";
-    public static final String SUBSCRIPTION_ID_COLUMN = "subscription_id";
-    public static final String PERIODICAL_EDITION_ID_COLUMN = "periodical_edition_id";
+    private static final String START_DATE_COLUMN = "start_date";
+    private static final String EXPIRATION_DATE_COLUMN = "expiration_date";
+    private static final String PRICE_COLUMN = "price";
+    private static final String SUBSCRIPTION_ID_COLUMN = "subscription_id";
+    private static final String PERIODICAL_EDITION_ID_COLUMN = "periodical_edition_id";
 
     private static final String SELECT_BY_ID_QUERY = "SELECT * FROM content WHERE id = ?";
     private static final String SELECT_ALL_QUERY = "SELECT * FROM content";
@@ -117,6 +120,4 @@ public class ContentRepositoryImpl extends AbstractRepositoryImpl<Content> imple
         }
         return false;
     }
-
-
 }

@@ -4,12 +4,14 @@ import by.epamtc.periodical_edition.entity.PeriodicalEditionImage;
 import by.epamtc.periodical_edition.repository.ImageRepository;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PeriodicalEditionImageRepositoryImpl extends AbstractRepositoryImpl<PeriodicalEditionImage> implements ImageRepository {
-    private static final String ID_COLUMN = "id";
     private static final String IMAGE_PATH_COLUMN = "image_path";
     private static final String PERIODICAL_EDITION_ID_COLUMN = "periodical_edition_id";
     private static final String SELECT_BY_ID_QUERY = "SELECT * FROM periodical_edition_image WHERE id = ?";
