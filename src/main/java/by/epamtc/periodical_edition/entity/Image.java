@@ -1,13 +1,12 @@
 package by.epamtc.periodical_edition.entity;
 
-public class PeriodicalEditionImage extends BaseEntity<Long> {
+public class Image extends BaseEntity<Long> {
     private Long periodicalEditionId;
     private String imagePath;
 
-    public PeriodicalEditionImage() {
-    }
+    public Image() {}
 
-    public PeriodicalEditionImage(Long id, Long periodicalEditionId, String imagePath) {
+    public Image(Long id, Long periodicalEditionId, String imagePath) {
         super.setId(id);
         this.periodicalEditionId = periodicalEditionId;
         this.imagePath = imagePath;
@@ -34,7 +33,7 @@ public class PeriodicalEditionImage extends BaseEntity<Long> {
         if (this == object) {return true;}
         if (object == null || getClass() != object.getClass()) {return false;}
 
-        PeriodicalEditionImage aThat = (PeriodicalEditionImage) object;
+        Image aThat = (Image) object;
 
         if (getId() == null) {if (aThat.getId() != null) {return false;}
         } else if (!getId().equals(aThat.getId())) {return false;}

@@ -9,7 +9,7 @@ public class Content extends BaseEntity<Long> {
     private Long subscriptionId;
     private Long periodicalEditionId;
 
-    public Content(){}
+    public Content() {}
 
     public Content(Long id, LocalDate startDate, LocalDate expirationDate, int price,
                    Long subscriptionId, Long periodicalEditionId) {

@@ -7,7 +7,7 @@ public class Subscription extends BaseEntity<Long> {
     private Long userId;
     private PaymentStatus paymentStatus;
 
-    public  Subscription(){}
+    public  Subscription() {}
 
     public Subscription(Long id, int price, Long userId, PaymentStatus paymentStatus) {
         super.setId(id);

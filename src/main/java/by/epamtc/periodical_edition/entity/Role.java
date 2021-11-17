@@ -3,7 +3,7 @@ package by.epamtc.periodical_edition.entity;
 public class Role extends BaseEntity<Long>{
     private String roleName;
 
-    public Role (){}
+    public Role () {}
 
     public Role(Long id, String roleName) {
         super.setId(id);

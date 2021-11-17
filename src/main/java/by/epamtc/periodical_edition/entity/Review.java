@@ -6,7 +6,8 @@ public class Review extends BaseEntity<Long> {
     private Long userId;
     private Long periodicalEditionId;
 
-    public Review(){}
+    public Review() {}
+
     public Review(Long id, String userComment, int rating, Long userId, Long periodicalEditionId) {
         super.setId(id);
         this.userComment = userComment;

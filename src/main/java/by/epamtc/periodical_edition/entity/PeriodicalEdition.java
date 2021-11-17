@@ -10,7 +10,7 @@ public class PeriodicalEdition extends BaseEntity<Long> {
     private PeriodicalEditionType periodicalEditionType;
     private Periodicity periodicity;
 
-    public PeriodicalEdition() { }
+    public PeriodicalEdition() {}
 
     public PeriodicalEdition(Long id, int price, String description, String title,
                              PeriodicalEditionType periodicalEditionType, Periodicity periodicity) {
