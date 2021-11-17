@@ -2,6 +2,7 @@ package by.epamtc.periodical_edition.repository.impl;
 
 import by.epamtc.periodical_edition.entity.Review;
 import by.epamtc.periodical_edition.repository.BaseRepositoryTest;
+import by.epamtc.periodical_edition.repository.ReviewRepository;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ReviewRepositoryImplTest extends BaseRepositoryTest {
-    private final ReviewRepositoryImpl reviewRepository;
+    private final ReviewRepository reviewRepository;
     private final List<Review> reviews;
 
     public ReviewRepositoryImplTest() {

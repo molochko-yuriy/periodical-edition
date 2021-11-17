@@ -3,6 +3,8 @@ package by.epamtc.periodical_edition.repository.impl;
 import by.epamtc.periodical_edition.entity.Subscription;
 import by.epamtc.periodical_edition.enums.PaymentStatus;
 import by.epamtc.periodical_edition.repository.BaseRepositoryTest;
+import by.epamtc.periodical_edition.repository.ContentRepository;
+import by.epamtc.periodical_edition.repository.SubscriptionRepository;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,13 +13,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SubscriptionRepositoryImplTest extends BaseRepositoryTest {
-
-    private final SubscriptionRepositoryImpl subscriptionRepository;
+    private final SubscriptionRepository subscriptionRepository;
     private final List<Subscription> subscriptions;
-    private final ContentRepositoryImpl contentRepository;
+    private final ContentRepository contentRepository;
 
     public SubscriptionRepositoryImplTest() {
         subscriptions = new ArrayList<>();
+        contentRepository = new ContentRepositoryImpl(getConnectionPool());
         subscriptionRepository = new SubscriptionRepositoryImpl(getConnectionPool());
         subscriptions.add(new Subscription(1L, 28, 1L, PaymentStatus.PAID));
         subscriptions.add(new Subscription(2L, 42, 1L, PaymentStatus.UNPAID));
@@ -30,7 +32,6 @@ public class SubscriptionRepositoryImplTest extends BaseRepositoryTest {
         subscriptions.add(new Subscription(9L, 2, 1L, PaymentStatus.PAID));
         subscriptions.add(new Subscription(10L, 62, 2L, PaymentStatus.UNPAID));
         subscriptions.add(new Subscription(11L, 48, 3L, PaymentStatus.PAID));
-        contentRepository = new ContentRepositoryImpl(getConnectionPool());
     }
 
     @Test

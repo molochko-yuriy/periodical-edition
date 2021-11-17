@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserRepositoryImplTest extends BaseRepositoryTest {
-    private final UserRepository userRepository;
+    private final BaseRepository<User> userRepository;
     private final List<User> users;
     private final SubscriptionRepository subscriptionRepository;
     private final RoleRepository roleRepository;
@@ -17,6 +17,8 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
     public UserRepositoryImplTest() {
         users = new ArrayList<>();
         userRepository = new UserRepositoryImpl(getConnectionPool());
+        subscriptionRepository = new SubscriptionRepositoryImpl(getConnectionPool());
+        roleRepository = new RoleRepositoryImpl(getConnectionPool());
         users.add(new User(1L, "Степанов", "Александр", "stepanow.a@mail.ru", "1111",
                 "8684758965", "stepanow.a@mail.ru", 235));
         users.add(new User(2L, "Александров", "Виктор", "alecsandrow.a@mail.ru", "2222",
@@ -25,8 +27,6 @@ public class UserRepositoryImplTest extends BaseRepositoryTest {
                 "9522585", "stepan.a@mail.ru", 235));
         users.add(new User(4L, "Александров", "Андрей", "alecsandr.a@mail.ru", "4444",
                 "7892152", "alecsandr.a@mail.ru", 25));
-        subscriptionRepository = new SubscriptionRepositoryImpl(getConnectionPool());
-        roleRepository = new RoleRepositoryImpl(getConnectionPool());
     }
 
     @Test

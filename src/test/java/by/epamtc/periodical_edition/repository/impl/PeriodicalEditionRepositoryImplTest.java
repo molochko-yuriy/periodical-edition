@@ -4,8 +4,10 @@ import by.epamtc.periodical_edition.entity.PeriodicalEdition;
 import by.epamtc.periodical_edition.enums.PeriodicalEditionType;
 import by.epamtc.periodical_edition.enums.Periodicity;
 import by.epamtc.periodical_edition.repository.BaseRepositoryTest;
+import by.epamtc.periodical_edition.repository.ContentRepository;
 import by.epamtc.periodical_edition.repository.ImageRepository;
 
+import by.epamtc.periodical_edition.repository.PeriodicalEditionRepository;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,18 +15,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PeriodicalEditionRepositoryImplTest extends BaseRepositoryTest {
-    private final PeriodicalEditionRepositoryImpl periodicalEditionRepository;
+    private final PeriodicalEditionRepository periodicalEditionRepository;
     private final List<PeriodicalEdition> periodicalEditions;
-    private final ContentRepositoryImpl contentRepository;
+    private final ContentRepository contentRepository;
     private final ImageRepository imageRepository;
 
     public PeriodicalEditionRepositoryImplTest() {
         periodicalEditions = new ArrayList<>();
+        contentRepository = new ContentRepositoryImpl(getConnectionPool());
+        imageRepository = new ImageRepositoryImpl(getConnectionPool());
         periodicalEditionRepository = new PeriodicalEditionRepositoryImpl(getConnectionPool());
         periodicalEditions.add(new PeriodicalEdition(1L, 20, "very good", "The Guardian", PeriodicalEditionType.MAGAZINE, Periodicity.WEEKLY));
         periodicalEditions.add(new PeriodicalEdition(2L, 30, "good", "The NY Times", PeriodicalEditionType.NEWSPAPER, Periodicity.MONTHLY));
-        contentRepository = new ContentRepositoryImpl(getConnectionPool());
-        imageRepository = new PeriodicalEditionImageRepositoryImpl(getConnectionPool());
     }
 
     @Test

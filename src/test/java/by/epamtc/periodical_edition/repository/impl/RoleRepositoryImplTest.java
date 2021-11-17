@@ -3,6 +3,7 @@ package by.epamtc.periodical_edition.repository.impl;
 import by.epamtc.periodical_edition.entity.Role;
 
 import by.epamtc.periodical_edition.repository.BaseRepositoryTest;
+import by.epamtc.periodical_edition.repository.RoleRepository;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,7 +13,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 public class RoleRepositoryImplTest extends BaseRepositoryTest {
-    private final RoleRepositoryImpl roleRepository;
+    private final RoleRepository roleRepository;
     private final List<Role> roles;
 
     public RoleRepositoryImplTest() {

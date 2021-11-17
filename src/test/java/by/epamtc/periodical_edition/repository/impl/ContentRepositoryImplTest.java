@@ -2,6 +2,7 @@ package by.epamtc.periodical_edition.repository.impl;
 
 import by.epamtc.periodical_edition.entity.Content;
 import by.epamtc.periodical_edition.repository.BaseRepositoryTest;
+import by.epamtc.periodical_edition.repository.ContentRepository;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class ContentRepositoryImplTest extends BaseRepositoryTest {
     private final List<Content> contents;
-    private final ContentRepositoryImpl contentRepository;
+    private final ContentRepository contentRepository;
 
     public ContentRepositoryImplTest() {
         contents = new ArrayList<>();

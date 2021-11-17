@@ -2,6 +2,7 @@ package by.epamtc.periodical_edition.repository.impl;
 
 import by.epamtc.periodical_edition.entity.PeriodicalEditionImage;
 import by.epamtc.periodical_edition.repository.BaseRepositoryTest;
+import by.epamtc.periodical_edition.repository.ImageRepository;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -9,13 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PeriodicalEditionImageRepositoryImplTest extends BaseRepositoryTest {
+public class ImageRepositoryImplTest extends BaseRepositoryTest {
     private final List<PeriodicalEditionImage> periodicalEditionImages;
-    private final PeriodicalEditionImageRepositoryImpl imageRepository;
+    private final ImageRepository imageRepository;
 
-    public  PeriodicalEditionImageRepositoryImplTest(){
+    public ImageRepositoryImplTest(){
         periodicalEditionImages = new ArrayList<>();
-        imageRepository = new PeriodicalEditionImageRepositoryImpl(getConnectionPool());
+        imageRepository = new ImageRepositoryImpl(getConnectionPool());
         periodicalEditionImages.add(new PeriodicalEditionImage(1L, 1L, "D/im/cont"));
         periodicalEditionImages.add(new PeriodicalEditionImage(2L, 2L, "D/if/nok"));
         periodicalEditionImages.add(new PeriodicalEditionImage(3L, 1L, "A/im/cont"));
