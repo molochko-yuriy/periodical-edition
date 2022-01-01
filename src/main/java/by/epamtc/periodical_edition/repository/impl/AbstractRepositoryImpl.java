@@ -90,7 +90,6 @@ public abstract class AbstractRepositoryImpl<E extends BaseEntity<Long>> impleme
         return false;
     }
 
-
     protected abstract void settingPreparedParameter(PreparedStatement preparedStatement, E e) throws SQLException;
 
     @Override
